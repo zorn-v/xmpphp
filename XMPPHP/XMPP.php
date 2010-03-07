@@ -219,6 +219,41 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 	}
 
 	/**
+	 * Add user to Roster
+	 *
+	 * @param string $jid
+	 * @param string $name
+	 */
+	public function RosterAddUser($jid, $name=null, $group=null) {
+		$payload = "<item jid='$jid'".($name ? " name='" . htmlspecialchars($name) . "'" : '')."/>\n".
+		($group?'<group>'.htmlspecialchars($group, ENT_QUOTES, 'UTF-8').'</group>':'');
+		$this->SendIq(NULL, 'set', "jabber:iq:roster", $payload);
+	}
+
+	/**
+	 * Send ID action
+	 *
+	 * @param string $to
+	 * @param string $type
+	 * @param string $xmlns
+	 * @param string $payload
+	 * @param string $from
+	 */
+	private function sendIq($to = NULL, $type = 'get', $xmlns = NULL, $payload = NULL, $from = NULL)
+	{
+		$id = $this->getID();
+		$xml = "<iq type='$type' id='$id'".
+		($to ? " to='$to'" : '').
+		($from ? " from='$from'" : '').
+		">
+			<query xmlns='$xmlns'>
+				$payload
+			</query>
+			</iq>";
+		return $this->send($xml);
+	}
+
+	/**
 	 * Message handler
 	 *
 	 * @param string $xml
