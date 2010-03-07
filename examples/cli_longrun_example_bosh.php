@@ -3,7 +3,7 @@
 // activate full error reporting
 //error_reporting(E_ALL & E_STRICT);
 
-include 'XMPPHP/BOSH.php';
+include dirname(dirname(__FILE__)).'/XMPPHP/BOSH.php';
 
 #Use XMPPHP_Log::LEVEL_VERBOSE to get more logging for error reports
 #If this doesn't work, are you running 64-bit PHP with < 5.2.6?
