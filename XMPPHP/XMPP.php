@@ -239,8 +239,9 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 	/**
 	 * Add user to Roster
 	 *
-	 * @param string $jid
-	 * @param string $name
+	 * @param string $jid user jid
+	 * @param string $name user nickname
+	 * @param string $group group to add
 	 */
 	public function RosterAddUser($jid, $name=null, $group=null) {
 		$payload = "<item jid='$jid'".($name ? " name='" . htmlspecialchars($name) . "'" : '')."/>\n".
@@ -251,11 +252,11 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 	/**
 	 * Send ID action
 	 *
-	 * @param string $to
-	 * @param string $type
-	 * @param string $xmlns
-	 * @param string $payload
-	 * @param string $from
+	 * @param string $to to jid
+	 * @param string $type type of ID
+	 * @param string $xmlns xmlns name
+	 * @param string $payload payload string
+	 * @param string $from from jid
 	 */
 	private function sendIq($to = NULL, $type = 'get', $xmlns = NULL, $payload = NULL, $from = NULL)
 	{
