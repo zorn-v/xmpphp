@@ -4,7 +4,7 @@ header('content-type', 'plain/text');
 // activate full error reporting
 //error_reporting(E_ALL & E_STRICT);
 
-include 'XMPPHP/BOSH.php';
+include dirname(dirname(__FILE__)).'/XMPPHP/BOSH.php';
 print "<pre>";
 
 #Use XMPPHP_Log::LEVEL_VERBOSE to get more logging for error reports
