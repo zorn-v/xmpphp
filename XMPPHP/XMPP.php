@@ -341,6 +341,8 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 	* Roster iq handler
 	* Gets all packets matching XPath "iq/{jabber:iq:roster}query'
 	*
+	* Implements RFC3921, 7.4. "Adding a Roster Item"
+	*
 	* @param string $xml
 	*/
 	protected function roster_iq_handler($xml) {
@@ -368,7 +370,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 			}
 		}
 		if ($xml->attrs['type'] == 'set') {
-			$this->send("<iq type=\"reply\" id=\"{$xml->attrs['id']}\" to=\"{$xml->attrs['from']}\" />");
+			$this->send("<iq type=\"result\" id=\"{$xml->attrs['id']}\" to=\"{$xml->attrs['from']}\" />");
 		}
 	}
 
