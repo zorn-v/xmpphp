@@ -465,8 +465,7 @@ class XMPPHP_XMLStream {
 					}
 					$part = fread($this->socket, 4096);
 					stream_set_blocking($this->socket, 1);
-
-					if (!$part) {
+					if ($part === false) {
 						if($this->reconnect) {
 							$this->doReconnect();
 						} else {
