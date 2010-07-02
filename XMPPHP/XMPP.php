@@ -117,7 +117,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 		$this->password = $password;
 		$this->resource = $resource;
 		if(!$server) $server = $host;
-		$this->basejid = $this->user . '@' . $this->host;
+		$this->basejid = $this->user . '@' . $this->server;
 
 		$this->roster = new Roster();
 		$this->track_presence = true;
@@ -143,7 +143,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 	public function useEncryption($useEncryption = true) {
 		$this->use_encryption = $useEncryption;
 	}
-	
+
 	/**
 	 * Turn on auto-authorization of subscription requests.
 	 *
