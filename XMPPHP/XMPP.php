@@ -27,8 +27,8 @@
  */
 
 /** XMPPHP_XMLStream */
-require_once 'XMPPHP/XMLStream.php';
-require_once 'XMPPHP/Roster.php';
+require_once 'XMLStream.php';
+require_once 'Roster.php';
 
 /**
  * XMPPHP Main Class

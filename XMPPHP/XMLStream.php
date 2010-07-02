@@ -27,13 +27,13 @@
  */
 
 /** XMPPHP_Exception */
-require_once 'XMPPHP/Exception.php';
+require_once 'Exception.php';
 
 /** XMPPHP_XMLObj */
-require_once 'XMPPHP/XMLObj.php';
+require_once 'XMLObj.php';
 
 /** XMPPHP_Log */
-require_once 'XMPPHP/Log.php';
+require_once 'Log.php';
 
 /**
  * XMPPHP XML Stream
