@@ -27,8 +27,8 @@
  */
 
 /** XMPPHP_XMLStream */
-require_once dirname(__FILE__) . "/XMLStream.php";
-require_once dirname(__FILE__) . "/Roster.php";
+require_once 'XMPPHP/XMLStream.php';
+require_once 'XMPPHP/Roster.php';
 
 /**
  * XMPPHP Main Class
@@ -99,6 +99,21 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 	public $roster;
 
 	/**
+	 * @var array supported auth mechanisms
+	 */
+	protected $auth_mechanism_supported = array('PLAIN', 'DIGEST-MD5');
+
+	/**
+	 * @var string default auth mechanism
+	 */
+	protected $auth_mechanism_default = 'PLAIN';
+
+	/**
+	 * @var string prefered auth mechanism
+	 */
+	protected $auth_mechanism_preferred = 'DIGEST-MD5';
+
+	/**
 	 * Constructor
 	 *
 	 * @param string  $host
@@ -117,6 +132,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 		$this->password = $password;
 		$this->resource = $resource;
 		if(!$server) $server = $host;
+		$this->server = $server;
 		$this->basejid = $this->user . '@' . $this->server;
 
 		$this->roster = new Roster();
@@ -133,6 +149,8 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 		$this->addXPathHandler('{jabber:client}message', 'message_handler');
 		$this->addXPathHandler('{jabber:client}presence', 'presence_handler');
 		$this->addXPathHandler('iq/{jabber:iq:roster}query', 'roster_iq_handler');
+		// For DIGEST-MD5 auth :
+		$this->addXPathHandler('{urn:ietf:params:xml:ns:xmpp-sasl}challenge', 'sasl_challenge_handler');
 	}
 
 	/**
@@ -219,6 +237,42 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 	}
 
 	/**
+	 * Add user to Roster
+	 *
+	 * @param string $jid user jid
+	 * @param string $name user nickname
+	 * @param string $group group to add
+	 */
+	public function RosterAddUser($jid, $name=null, $group=null) {
+		$payload = "<item jid='$jid'".($name ? " name='" . htmlspecialchars($name) . "'" : '')."/>\n".
+		($group?'<group>'.htmlspecialchars($group, ENT_QUOTES, 'UTF-8').'</group>':'');
+		$this->SendIq(NULL, 'set', "jabber:iq:roster", $payload);
+	}
+
+	/**
+	 * Send ID action
+	 *
+	 * @param string $to to jid
+	 * @param string $type type of ID
+	 * @param string $xmlns xmlns name
+	 * @param string $payload payload string
+	 * @param string $from from jid
+	 */
+	private function sendIq($to = NULL, $type = 'get', $xmlns = NULL, $payload = NULL, $from = NULL)
+	{
+		$id = $this->getID();
+		$xml = "<iq type='$type' id='$id'".
+		($to ? " to='$to'" : '').
+		($from ? " from='$from'" : '').
+		">
+			<query xmlns='$xmlns'>
+				$payload
+			</query>
+			</iq>";
+		return $this->send($xml);
+	}
+
+	/**
 	 * Message handler
 	 *
 	 * @param string $xml
@@ -281,7 +335,33 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 		} else {
 			$this->log->log("Attempting Auth...");
 			if ($this->password) {
-			$this->send("<auth xmlns='urn:ietf:params:xml:ns:xmpp-sasl' mechanism='PLAIN'>" . base64_encode("\x00" . $this->user . "\x00" . $this->password) . "</auth>");
+				$mechanism = 'PLAIN'; // default;
+				if ($xml->hasSub('mechanisms') && $xml->sub('mechanisms')->hasSub('mechanism')) {
+					// Get the list of all available auth mechanism that we can use
+					$available = array();
+					foreach ($xml->sub('mechanisms')->subs as $sub) {
+						if ($sub->name == 'mechanism') {
+							if (in_array($sub->data, $this->auth_mechanism_supported)) {
+								$available[$sub->data] = $sub->data;
+							}
+						}
+					}
+					if (isset($available[$this->auth_mechanism_preferred])) {
+						$mechanism = $this->auth_mechanism_preferred;
+					} else {
+						// use the first available
+						$mechanism = reset($available);
+					}
+					$this->log->log("Trying $mechanism (available : " . implode(',', $available) . ')');
+				}
+				switch ($mechanism) {
+					case 'PLAIN':
+						$this->send("<auth xmlns='urn:ietf:params:xml:ns:xmpp-sasl' mechanism='PLAIN'>" . base64_encode("\x00" . $this->user . "\x00" . $this->password) . "</auth>");
+						break;
+					case 'DIGEST-MD5':
+						$this->send("<auth xmlns='urn:ietf:params:xml:ns:xmpp-sasl' mechanism='DIGEST-MD5' />");
+						break;
+				}
 			} else {
                         $this->send("<auth xmlns='urn:ietf:params:xml:ns:xmpp-sasl' mechanism='ANONYMOUS'/>");
 			}	
@@ -309,6 +389,56 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 		$this->disconnect();
 		
 		throw new XMPPHP_Exception('Auth failed!');
+	}
+
+	/**
+	 * Handle challenges for DIGEST-MD5 auth
+	 *
+	 * @param string $xml
+	 */
+	protected function sasl_challenge_handler($xml) {
+		// Decode and parse the challenge string
+		// (may be something like foo="bar",foo2="bar2,bar3,bar4",foo3=bar5 )
+		$challenge = base64_decode($xml->data);
+		$vars = array();
+		$matches = array();
+		preg_match_all('/(\w+)=(?:"([^"]*)|([^,]*))/', $challenge, $matches);
+		$res = array();
+		foreach ($matches[1] as $k => $v) {
+			$vars[$v] = (empty($matches[2][$k])?$matches[3][$k]:$matches[2][$k]);
+		}
+
+		if (isset($vars['nonce'])) {
+			// First step
+			$vars['cnonce'] = uniqid(mt_rand(), false);
+			$vars['nc']     = '00000001';
+			$vars['qop']    = 'auth'; // Force qop to auth
+			if (!isset($vars['digest-uri'])) $vars['digest-uri'] = 'xmpp/' . $this->server;
+			if (!isset($vars['realm'])) $vars['realm'] = '';
+
+			// now, the magic...
+			$a1 = sprintf('%s:%s:%s', $this->user, $vars['realm'], $this->password);
+			if ($vars['algorithm'] == 'md5-sess') {
+				$a1 = pack('H32',md5($a1)) . ':' . $vars['nonce'] . ':' . $vars['cnonce'];
+			}
+			$a2 = "AUTHENTICATE:" . $vars['digest-uri'];
+			$password = md5($a1) . ':' . $vars['nonce'] . ':' . $vars['nc'] . ':' . $vars['cnonce'] . ':' . $vars['qop'] . ':' .md5($a2);
+			$password = md5($password);
+			$response = sprintf('username="%s",realm="%s",nonce="%s",cnonce="%s",nc=%s,qop=%s,digest-uri="%s",response=%s,charset=utf-8',
+				$this->user, $vars['realm'], $vars['nonce'], $vars['cnonce'], $vars['nc'], $vars['qop'], $vars['digest-uri'], $password);
+
+			// Send the response
+			$response = base64_encode($response);
+			$this->send("<response xmlns='urn:ietf:params:xml:ns:xmpp-sasl'>$response</response>");
+		} else {
+			if (isset($vars['rspauth'])) {
+				// Second step
+				$this->send("<response xmlns='urn:ietf:params:xml:ns:xmpp-sasl'/>");
+			} else {
+				$this->log->log("ERROR receiving challenge : " . $challenge, XMPPHP_Log::LEVEL_ERROR);
+			}
+
+		}
 	}
 
 	/**
@@ -341,6 +471,8 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 	* Roster iq handler
 	* Gets all packets matching XPath "iq/{jabber:iq:roster}query'
 	*
+	* Implements RFC3921, 7.4. "Adding a Roster Item"
+	*
 	* @param string $xml
 	*/
 	protected function roster_iq_handler($xml) {
@@ -368,7 +500,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 			}
 		}
 		if ($xml->attrs['type'] == 'set') {
-			$this->send("<iq type=\"reply\" id=\"{$xml->attrs['id']}\" to=\"{$xml->attrs['from']}\" />");
+			$this->send("<iq type=\"result\" id=\"{$xml->attrs['id']}\" to=\"{$xml->attrs['from']}\" />");
 		}
 	}
 
