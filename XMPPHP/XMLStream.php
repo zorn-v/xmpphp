@@ -428,9 +428,9 @@ class XMPPHP_XMLStream {
 	private function __process($maximum = 5, $return_when_received = false)
 	{
 		$remaining = $maximum;
-		
+		$starttime = (microtime(true) * 1000000);		
 		do {
-			$starttime = (microtime(true) * 1000000);
+
 			$read = array($this->socket);
 			$write = array();
 			$except = array();
@@ -474,13 +474,22 @@ class XMPPHP_XMLStream {
 							return false;
 						}
 					}
-					$this->log->log("RECV: $part",  XMPPHP_Log::LEVEL_VERBOSE);
+					// just to avoid a lot of blank fread result
+					if($part!='')
+						$this->log->log("RECV: $part",  XMPPHP_Log::LEVEL_VERBOSE);
 					$buff .= $part;
-				} while (!$this->bufferComplete($buff));
 
-				xml_parse($this->parser, $buff, false);
-				if ($return_when_received) {
-					return true;
+					$endtime = (microtime(true)*1000000);
+					$time_past = $endtime - $starttime;
+					$remaining = $remaining - $time_past;
+
+				} while ( (is_null($maximum) || $remaining > 0) && !$this->bufferComplete($buff) );
+
+				if(trim($buff) != ''){
+					xml_parse($this->parser, $buff, false);
+					if ($return_when_received) {
+						return true;
+					}
 				}
 			} else {
 				# $updated == 0 means no changes during timeout.
@@ -488,6 +497,7 @@ class XMPPHP_XMLStream {
 			$endtime = (microtime(true)*1000000);
 			$time_past = $endtime - $starttime;
 			$remaining = $remaining - $time_past;
+
 		} while (is_null($maximum) || $remaining > 0);
 		return true;
 	}
