@@ -425,7 +425,7 @@ class XMPPHP_XMLStream {
 	 *
 	 * @return boolean True when all goes well, false when something fails
 	 */
-	private function __process($maximum = 5, $return_when_received = false)
+	protected function __process($maximum = 5, $return_when_received = false)
 	{
 		$remaining = $maximum;
 		$starttime = (microtime(true) * 1000000);		
