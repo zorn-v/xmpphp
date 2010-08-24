@@ -27,7 +27,7 @@
  */
 
 /** XMPPHP_XMLStream */
-require_once 'XMPPHP/XMPP.php';
+require_once 'XMPP.php';
 
 /**
  * XMPPHP Main Class
@@ -59,10 +59,11 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 			{
 				$this->loadSession();
 			}
+
 			if(!$this->sid) {
 				$body = $this->__buildBody();
 				$body->addAttribute('hold','1');
-				$body->addAttribute('to', $this->host);
+				$body->addAttribute('to', $this->server);
 				$body->addAttribute('route', "xmpp:{$this->host}:{$this->port}");
 				$body->addAttribute('secure','true');
 				$body->addAttribute('xmpp:version','1.6', 'urn:xmpp:xbosh');
@@ -85,7 +86,8 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 			if(!$body) {
 				$body = $this->__buildBody();
 			}
-			$ch = curl_init($this->http_server);
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL,$this->http_server);
 			curl_setopt($ch, CURLOPT_HEADER, 0);
 			curl_setopt($ch, CURLOPT_POST, 1);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $body->asXML());
@@ -121,7 +123,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 			return $xml;
 		}
 
-		public function __process() {
+		protected function __process() {
 			if($this->http_buffer) {
 				$this->__parseBuffer();
 			} else {
