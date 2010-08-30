@@ -47,6 +47,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 		protected $http_server;
 		protected $http_buffer = Array();
 		protected $session = false;
+		protected $inactivity;
 
 		public function connect($server, $wait='1', $session=false) {
 			$this->http_server = $server;
@@ -55,12 +56,14 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 
 			$this->rid = 3001;
 			$this->sid = null;
+			$this->inactivity=0;
+			
 			if($session)
-			{
+			{		
 				$this->loadSession();
 			}
 
-			if(!$this->sid) {
+			if(!$this->sid || $this->lat>=$this->inactivity) {
 				$body = $this->__buildBody();
 				$body->addAttribute('hold','1');
 				$body->addAttribute('to', $this->server);
@@ -75,7 +78,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 				$response = $this->__sendBody($body);
 				$rxml = new SimpleXMLElement($response);
 				$this->sid = $rxml['sid'];
-
+				$this->inactivity = $rxml['inactivity'];
 			} else {
 				$buff = "<stream:stream xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams'>";
 				xml_parse($this->parser, $buff, false);
@@ -101,6 +104,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 				$output = curl_exec($ch);
 				$this->http_buffer[] = $output;
 			}
+
 			curl_close($ch);
 			return $output;
 		}
@@ -130,6 +134,8 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 				$this->__sendBody();
 				$this->__parseBuffer();
 			}
+
+			$this->saveSession();
 		}
 
 		public function __parseBuffer() {
@@ -176,15 +182,24 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 			if(isset($_SESSION['XMPPHP_BOSH_RID'])) $this->rid = $_SESSION['XMPPHP_BOSH_RID'];
 			if(isset($_SESSION['XMPPHP_BOSH_SID'])) $this->sid = $_SESSION['XMPPHP_BOSH_SID'];
 			if(isset($_SESSION['XMPPHP_BOSH_authed'])) $this->authed = $_SESSION['XMPPHP_BOSH_authed'];
-			if(isset($_SESSION['XMPPHP_BOSH_jid'])) $this->jid = $_SESSION['XMPPHP_BOSH_jid'];
+			if(isset($_SESSION['XMPPHP_BOSH_basejid'])) $this->basejid = $_SESSION['XMPPHP_BOSH_basejid'];
 			if(isset($_SESSION['XMPPHP_BOSH_fulljid'])) $this->fulljid = $_SESSION['XMPPHP_BOSH_fulljid'];
+			if(isset($_SESSION['XMPPHP_BOSH_inactivity'])) $this->inactivity = $_SESSION['XMPPHP_BOSH_inactivity'];
+			$this->lat = time() - (isset($_SESSION['XMPPHP_BOSH_lat'])? $_SESSION['XMPPHP_BOSH_lat'] : 0);
 		}
 
 		public function saveSession() {
 			$_SESSION['XMPPHP_BOSH_RID'] = (string) $this->rid;
 			$_SESSION['XMPPHP_BOSH_SID'] = (string) $this->sid;
 			$_SESSION['XMPPHP_BOSH_authed'] = (boolean) $this->authed;
-			$_SESSION['XMPPHP_BOSH_jid'] = (string) $this->jid;
+			$_SESSION['XMPPHP_BOSH_basejid'] = (string) $this->basejid;
 			$_SESSION['XMPPHP_BOSH_fulljid'] = (string) $this->fulljid;
+			$_SESSION['XMPPHP_BOSH_inactivity'] = (string) $this->inactivity;			
+			$_SESSION['XMPPHP_BOSH_lat'] = (string) time();
+		}
+		
+		public function disconnect(){
+			parent::disconnect();
+			session_destroy();
 		}
 }
