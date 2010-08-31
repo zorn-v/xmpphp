@@ -48,7 +48,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 		protected $http_buffer = Array();
 		protected $session = false;
 		protected $inactivity;
-
+		
 		public function connect($server, $wait='1', $session=false) {
 			$this->http_server = $server;
 			$this->use_encryption = false;
@@ -181,6 +181,15 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 		}
 
 		public function loadSession() {
+			if(session_id()==""){
+				// session not started so use session_file
+				$session_file = sys_get_temp_dir()."/".$this->user."_".$this->server."_session";
+				$session_serialized = file_get_contents($session_file, NULL, NULL, 6);
+				$this->log->log("SESSION: reading $session_serialized from $session_file",  XMPPHP_Log::LEVEL_VERBOSE);
+				if($session_serialized!="")
+					$_SESSION = unserialize($session_serialized);
+			}
+			
 			if(isset($_SESSION['XMPPHP_BOSH_inactivity'])) $this->inactivity = $_SESSION['XMPPHP_BOSH_inactivity'];
 			$this->lat = time() - (isset($_SESSION['XMPPHP_BOSH_lat'])? $_SESSION['XMPPHP_BOSH_lat'] : 0);			
 			if($this->lat<$this->inactivity){
@@ -199,7 +208,14 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 			$_SESSION['XMPPHP_BOSH_basejid'] = (string) $this->basejid;
 			$_SESSION['XMPPHP_BOSH_fulljid'] = (string) $this->fulljid;
 			$_SESSION['XMPPHP_BOSH_inactivity'] = (string) $this->inactivity;			
-			$_SESSION['XMPPHP_BOSH_lat'] = (string) time();
+			$_SESSION['XMPPHP_BOSH_lat'] = (string) time();		
+			
+			if(session_id()==""){
+				$session_file = sys_get_temp_dir()."/".$this->user."_".$this->server."_session";
+				// <?php prefix used to mask the content of the session file
+				$session_serialized = "<?php ".serialize($_SESSION);
+				file_put_contents($session_file,$session_serialized);
+			}
 		}
 		
 		public function disconnect(){
