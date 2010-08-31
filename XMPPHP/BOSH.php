@@ -63,7 +63,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 				$this->loadSession();
 			}
 
-			if(!$this->sid || $this->lat>=$this->inactivity) {
+			if(!$this->sid) {
 				$body = $this->__buildBody();
 				$body->addAttribute('hold','1');
 				$body->addAttribute('to', $this->server);
@@ -99,9 +99,11 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $header );
 			curl_setopt($ch, CURLOPT_VERBOSE, 0);
 			$output = '';
+
 			if($recv) {
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 				$output = curl_exec($ch);
+				if(curl_getinfo($ch,CURLINFO_HTTP_CODE)!="200") throw new XMPPHP_Exception("Wrong response from server!");
 				$this->http_buffer[] = $output;
 			}
 
@@ -179,13 +181,15 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 		}
 
 		public function loadSession() {
-			if(isset($_SESSION['XMPPHP_BOSH_RID'])) $this->rid = $_SESSION['XMPPHP_BOSH_RID'];
-			if(isset($_SESSION['XMPPHP_BOSH_SID'])) $this->sid = $_SESSION['XMPPHP_BOSH_SID'];
-			if(isset($_SESSION['XMPPHP_BOSH_authed'])) $this->authed = $_SESSION['XMPPHP_BOSH_authed'];
-			if(isset($_SESSION['XMPPHP_BOSH_basejid'])) $this->basejid = $_SESSION['XMPPHP_BOSH_basejid'];
-			if(isset($_SESSION['XMPPHP_BOSH_fulljid'])) $this->fulljid = $_SESSION['XMPPHP_BOSH_fulljid'];
 			if(isset($_SESSION['XMPPHP_BOSH_inactivity'])) $this->inactivity = $_SESSION['XMPPHP_BOSH_inactivity'];
-			$this->lat = time() - (isset($_SESSION['XMPPHP_BOSH_lat'])? $_SESSION['XMPPHP_BOSH_lat'] : 0);
+			$this->lat = time() - (isset($_SESSION['XMPPHP_BOSH_lat'])? $_SESSION['XMPPHP_BOSH_lat'] : 0);			
+			if($this->lat<$this->inactivity){
+				if(isset($_SESSION['XMPPHP_BOSH_RID'])) $this->rid = $_SESSION['XMPPHP_BOSH_RID'];
+				if(isset($_SESSION['XMPPHP_BOSH_SID'])) $this->sid = $_SESSION['XMPPHP_BOSH_SID'];
+				if(isset($_SESSION['XMPPHP_BOSH_authed'])) $this->authed = $_SESSION['XMPPHP_BOSH_authed'];
+				if(isset($_SESSION['XMPPHP_BOSH_basejid'])) $this->basejid = $_SESSION['XMPPHP_BOSH_basejid'];
+				if(isset($_SESSION['XMPPHP_BOSH_fulljid'])) $this->fulljid = $_SESSION['XMPPHP_BOSH_fulljid'];
+			}
 		}
 
 		public function saveSession() {
