@@ -184,7 +184,12 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 			if(session_id()==""){
 				// session not started so use session_file
 				$session_file = sys_get_temp_dir()."/".$this->user."_".$this->server."_session";
+
+				// manage multiple accesses				
+				if(!file_exists($session_file)) file_put_contents($session_file,"");
+				$session_file_fp = fopen($session_file,"r"); flock($session_file_fp,LOCK_EX);
 				$session_serialized = file_get_contents($session_file, NULL, NULL, 6);
+				
 				$this->log->log("SESSION: reading $session_serialized from $session_file",  XMPPHP_Log::LEVEL_VERBOSE);
 				if($session_serialized!="")
 					$_SESSION = unserialize($session_serialized);
