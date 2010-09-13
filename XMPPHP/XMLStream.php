@@ -656,9 +656,14 @@ class XMPPHP_XMLStream {
 							}
 						}
 						if ($searchxml !== null) {
-							if($handler[2] === null) $handler[2] = $this;
-							$this->log->log("Calling {$handler[1]}",  XMPPHP_Log::LEVEL_DEBUG);
-							$handler[2]->$handler[1]($this->xmlobj[2]);
+							if( is_object( $handler[1] ) and is_callable( $handler[1] ) ) {
+								$this->log->log("Calling Closure",  XMPPHP_Log::LEVEL_DEBUG);
+								$handler[1]($this->xmlobj[2]);
+							} else {
+								if($handler[2] === null) $handler[2] = $this;
+								$this->log->log("Calling {$handler[1]}",  XMPPHP_Log::LEVEL_DEBUG);
+								$handler[2]->$handler[1]($this->xmlobj[2]);
+							}
 						}
 					}
 				}
