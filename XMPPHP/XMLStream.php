@@ -527,6 +527,23 @@ class XMPPHP_XMLStream {
 			return $this->__process($timeout * 1000000);
 		}
 	}
+	
+	/**
+	 * Process until next event or a timeout occurs
+	 *
+	 * @param integer $timeout Time in seconds
+	 *
+	 * @return string
+	 *
+	 * @see __process()
+	 */
+	public function processUntilNext($timeout=NULL) {
+		if (is_null($timeout)) {
+			return $this->__process(NULL, TRUE);
+		} else {
+			return $this->__process($timeout * 1000000, TRUE);
+		}
+	}
 
 	/**
 	 * Process until a specified event or a timeout occurs
