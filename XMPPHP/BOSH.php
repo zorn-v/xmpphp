@@ -146,6 +146,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 			}
 
 			$this->saveSession();
+			return true;
 		}
 
 		public function __parseBuffer() {
