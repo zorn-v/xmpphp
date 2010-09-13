@@ -235,6 +235,12 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 		
 		public function disconnect(){
 			parent::disconnect();
-			session_destroy();
+			unset($_SESSION['XMPPHP_BOSH_RID']);
+			unset($_SESSION['XMPPHP_BOSH_SID']);
+			unset($_SESSION['XMPPHP_BOSH_authed']);
+			unset($_SESSION['XMPPHP_BOSH_basejid']);
+			unset($_SESSION['XMPPHP_BOSH_fulljid']);
+			unset($_SESSION['XMPPHP_BOSH_inactivity']);
+			unset($_SESSION['XMPPHP_BOSH_lat']);
 		}
 }
