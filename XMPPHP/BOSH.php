@@ -48,9 +48,16 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 		protected $http_buffer = Array();
 		protected $session = false;
 		protected $inactivity;
-		
-		public function connect($server, $wait='1', $session=false) {
-			$this->http_server = $server;
+
+		public function connect($server=NULL, $wait='1', $session=false) {
+			if (is_null( $server )) {
+				//if we aren't given the server http url, try and guess it
+				$port_string = ( $this->port && $this->port != 80 ) ? ":".$this->port : "";
+				$this->http_server = "http://".$this->host."$port_string/http-bind/";
+			} else {
+				$this->http_server = $server;
+			}
+
 			$this->use_encryption = false;
 			$this->session = $session;
 
@@ -129,7 +136,8 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 			return $xml;
 		}
 
-		protected function __process() {
+		//null params are not used and just to statify Strict Function Declaration
+		public function __process($null1=NULL,$null2=NULL) {
 			if($this->http_buffer) {
 				$this->__parseBuffer();
 			} else {
@@ -157,7 +165,8 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 			}
 		}
 
-		public function send($msg) {
+		//null params are not used and just to statify Strict Function Declaration
+		public function send($msg,$null1=NULL) {
 			$this->log->log("SEND: $msg",  XMPPHP_Log::LEVEL_VERBOSE);
 			$msg = new SimpleXMLElement($msg);
 			#$msg->addAttribute('xmlns', 'jabber:client');
