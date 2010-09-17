@@ -48,9 +48,16 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 		protected $http_buffer = Array();
 		protected $session = false;
 		protected $inactivity;
-		
-		public function connect($server, $wait='1', $session=false) {
-			$this->http_server = $server;
+
+		public function connect($server=NULL, $wait='1', $session=false) {
+			if (is_null( $server )) {
+				//if we aren't given the server http url, try and guess it
+				$port_string = ( $this->port && $this->port != 80 ) ? ":".$this->port : "";
+				$this->http_server = "http://".$this->host."$port_string/http-bind/";
+			} else {
+				$this->http_server = $server;
+			}
+
 			$this->use_encryption = false;
 			$this->session = $session;
 
@@ -69,7 +76,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 				$body->addAttribute('to', $this->server);
 				$body->addAttribute('route', "xmpp:{$this->host}:{$this->port}");
 				$body->addAttribute('secure','true');
-				$body->addAttribute('xmpp:version','1.6', 'urn:xmpp:xbosh');
+				$body->addAttribute('xmpp:version','1.0', 'urn:xmpp:xbosh');
 				$body->addAttribute('wait', strval($wait));
 				$body->addAttribute('ack','1');
 				$body->addAttribute('xmlns:xmpp','urn:xmpp:xbosh');
@@ -119,7 +126,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 			if($this->sid) $xml->addAttribute('sid', $this->sid);
 			#if($this->sid) $xml->addAttribute('xmlns', 'http://jabber.org/protocol/httpbind');
 			$xml->addAttribute('xml:lang', 'en');
-			if($sub) { // ok, so simplexml is lame
+			if($sub !== NULL) { // ok, so simplexml is lame
 				$p = dom_import_simplexml($xml);
 				$c = dom_import_simplexml($sub);
 				$cn = $p->ownerDocument->importNode($c, true);
@@ -129,7 +136,8 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 			return $xml;
 		}
 
-		protected function __process() {
+		//null params are not used and just to statify Strict Function Declaration
+		public function __process($null1=NULL,$null2=NULL) {
 			if($this->http_buffer) {
 				$this->__parseBuffer();
 			} else {
@@ -138,6 +146,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 			}
 
 			$this->saveSession();
+			return true;
 		}
 
 		public function __parseBuffer() {
@@ -157,7 +166,8 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 			}
 		}
 
-		public function send($msg) {
+		//null params are not used and just to statify Strict Function Declaration
+		public function send($msg,$null1=NULL) {
 			$this->log->log("SEND: $msg",  XMPPHP_Log::LEVEL_VERBOSE);
 			$msg = new SimpleXMLElement($msg);
 			#$msg->addAttribute('xmlns', 'jabber:client');
@@ -225,6 +235,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 		
 		public function disconnect(){
 			parent::disconnect();
+<<<<<<< HEAD
 			if(session_id()=="")
 				unlink(sys_get_temp_dir()."/".$this->user."_".$this->server."_session");
 			else{
@@ -236,5 +247,14 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 				unset($_SESSION['XMPPHP_BOSH_inactivity']);
 				unset($_SESSION['XMPPHP_BOSH_lat']);
 			}
+=======
+			unset($_SESSION['XMPPHP_BOSH_RID']);
+			unset($_SESSION['XMPPHP_BOSH_SID']);
+			unset($_SESSION['XMPPHP_BOSH_authed']);
+			unset($_SESSION['XMPPHP_BOSH_basejid']);
+			unset($_SESSION['XMPPHP_BOSH_fulljid']);
+			unset($_SESSION['XMPPHP_BOSH_inactivity']);
+			unset($_SESSION['XMPPHP_BOSH_lat']);
+>>>>>>> 4008959118efcd3966b8980de15227d98f89b175
 		}
 }
