@@ -235,7 +235,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 		
 		public function disconnect(){
 			parent::disconnect();
-<<<<<<< HEAD
+
 			if(session_id()=="")
 				unlink(sys_get_temp_dir()."/".$this->user."_".$this->server."_session");
 			else{
@@ -247,14 +247,5 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 				unset($_SESSION['XMPPHP_BOSH_inactivity']);
 				unset($_SESSION['XMPPHP_BOSH_lat']);
 			}
-=======
-			unset($_SESSION['XMPPHP_BOSH_RID']);
-			unset($_SESSION['XMPPHP_BOSH_SID']);
-			unset($_SESSION['XMPPHP_BOSH_authed']);
-			unset($_SESSION['XMPPHP_BOSH_basejid']);
-			unset($_SESSION['XMPPHP_BOSH_fulljid']);
-			unset($_SESSION['XMPPHP_BOSH_inactivity']);
-			unset($_SESSION['XMPPHP_BOSH_lat']);
->>>>>>> 4008959118efcd3966b8980de15227d98f89b175
 		}
 }
