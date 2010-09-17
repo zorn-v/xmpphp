@@ -225,6 +225,9 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 		
 		public function disconnect(){
 			parent::disconnect();
-			session_destroy();
+			if(session_id()=="")
+				unlink(sys_get_temp_dir()."/".$this->user."_".$this->server."_session");
+			else
+				session_destroy();
 		}
 }
