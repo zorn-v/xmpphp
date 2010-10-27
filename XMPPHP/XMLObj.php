@@ -171,7 +171,7 @@ class XMPPHP_XMLObj {
 	public function hasAttrs($attrs){
 		foreach($attrs as $attr=>$value)
 			if($this->attrs[strtolower($attr)]!=$value) 
-				return false		
+				return false;
 		return true;
 	}
 
