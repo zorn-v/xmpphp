@@ -313,11 +313,17 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 					case '110':
 						$payload['affiliation'] = $x->sub('item')->attrs['affiliation'];
 						$payload['role'] = $x->sub('item')->attrs['role'];
+						$this->event('room_joined');
 					break;
 				}
 						
 		}
-				
+		
+		if($xml->hasSub('error')){
+			$error = $xml->sub('error');
+			//TODO	$error->attrs['type']; different types of error may need different management
+			$this->event('presence_error', $payload);
+		}
 		
 		$payload['type'] = (isset($xml->attrs['type'])) ? $xml->attrs['type'] : 'available';
 		$payload['show'] = (isset($xml->sub('show')->data)) ? $xml->sub('show')->data : $payload['type'];
