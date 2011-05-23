@@ -191,15 +191,16 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 		}
 
 		public function loadSession() {
-			if(session_id()==""){
+			if($this->session=='ON_FILE'){
 				// session not started so use session_file
 				$session_file = sys_get_temp_dir()."/".$this->user."_".$this->server."_session";
 
 				// manage multiple accesses				
 				if(!file_exists($session_file)) file_put_contents($session_file,"");
 				$session_file_fp = fopen($session_file,"r"); flock($session_file_fp,LOCK_EX);
-				$session_serialized = file_get_contents($session_file, NULL, NULL, 6);
-				
+				$session_serialized = file_get_contents($session_file, NULL, NULL, 6); 
+				flock($session_file_fp,LOCK_UN); fclose($session_file_fp);
+
 				$this->log->log("SESSION: reading $session_serialized from $session_file",  XMPPHP_Log::LEVEL_VERBOSE);
 				if($session_serialized!="")
 					$_SESSION = unserialize($session_serialized);
@@ -225,18 +226,20 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 			$_SESSION['XMPPHP_BOSH_inactivity'] = (string) $this->inactivity;			
 			$_SESSION['XMPPHP_BOSH_lat'] = (string) time();		
 			
-			if(session_id()==""){
+			if($this->session=='ON_FILE'){
 				$session_file = sys_get_temp_dir()."/".$this->user."_".$this->server."_session";
+				$session_file_fp = fopen($session_file,"r"); flock($session_file_fp,LOCK_EX);
 				// <?php prefix used to mask the content of the session file
 				$session_serialized = "<?php ".serialize($_SESSION);
 				file_put_contents($session_file,$session_serialized);
+				flock($session_file_fp,LOCK_UN); fclose($session_file_fp);
 			}
 		}
 		
 		public function disconnect(){
 			parent::disconnect();
 
-			if(session_id()=="")
+			if($this->session=='ON_FILE')
 				unlink(sys_get_temp_dir()."/".$this->user."_".$this->server."_session");
 			else{
 				unset($_SESSION['XMPPHP_BOSH_RID']);
