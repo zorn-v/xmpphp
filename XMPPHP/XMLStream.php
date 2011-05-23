@@ -759,6 +759,7 @@ class XMPPHP_XMLStream {
 				$handler[2]->$handler[1]($payload);
 			}
 		}
+		if( $this->until != null )
 		foreach($this->until as $key => $until) {
 			if(is_array($until)) {
 				if(in_array($name, $until)) {
