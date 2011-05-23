@@ -203,28 +203,28 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 
 				$this->log->log("SESSION: reading $session_serialized from $session_file",  XMPPHP_Log::LEVEL_VERBOSE);
 				if($session_serialized!="")
-					$_SESSION = unserialize($session_serialized);
+					$_SESSION['XMPPHP_BOSH'] = unserialize($session_serialized);
 			}
 			
-			if(isset($_SESSION['XMPPHP_BOSH_inactivity'])) $this->inactivity = $_SESSION['XMPPHP_BOSH_inactivity'];
-			$this->lat = time() - (isset($_SESSION['XMPPHP_BOSH_lat'])? $_SESSION['XMPPHP_BOSH_lat'] : 0);			
+			if(isset($_SESSION['XMPPHP_BOSH']['inactivity'])) $this->inactivity = $_SESSION['XMPPHP_BOSH']['inactivity'];
+			$this->lat = time() - (isset($_SESSION['XMPPHP_BOSH']['lat'])? $_SESSION['XMPPHP_BOSH']['lat'] : 0);			
 			if($this->lat<$this->inactivity){
-				if(isset($_SESSION['XMPPHP_BOSH_RID'])) $this->rid = $_SESSION['XMPPHP_BOSH_RID'];
-				if(isset($_SESSION['XMPPHP_BOSH_SID'])) $this->sid = $_SESSION['XMPPHP_BOSH_SID'];
-				if(isset($_SESSION['XMPPHP_BOSH_authed'])) $this->authed = $_SESSION['XMPPHP_BOSH_authed'];
-				if(isset($_SESSION['XMPPHP_BOSH_basejid'])) $this->basejid = $_SESSION['XMPPHP_BOSH_basejid'];
-				if(isset($_SESSION['XMPPHP_BOSH_fulljid'])) $this->fulljid = $_SESSION['XMPPHP_BOSH_fulljid'];
+				if(isset($_SESSION['XMPPHP_BOSH']['RID'])) $this->rid = $_SESSION['XMPPHP_BOSH']['RID'];
+				if(isset($_SESSION['XMPPHP_BOSH']['SID'])) $this->sid = $_SESSION['XMPPHP_BOSH']['SID'];
+				if(isset($_SESSION['XMPPHP_BOSH']['authed'])) $this->authed = $_SESSION['XMPPHP_BOSH']['authed'];
+				if(isset($_SESSION['XMPPHP_BOSH']['basejid'])) $this->basejid = $_SESSION['XMPPHP_BOSH']['basejid'];
+				if(isset($_SESSION['XMPPHP_BOSH']['fulljid'])) $this->fulljid = $_SESSION['XMPPHP_BOSH']['fulljid'];
 			}
 		}
 
 		public function saveSession() {
-			$_SESSION['XMPPHP_BOSH_RID'] = (string) $this->rid;
-			$_SESSION['XMPPHP_BOSH_SID'] = (string) $this->sid;
-			$_SESSION['XMPPHP_BOSH_authed'] = (boolean) $this->authed;
-			$_SESSION['XMPPHP_BOSH_basejid'] = (string) $this->basejid;
-			$_SESSION['XMPPHP_BOSH_fulljid'] = (string) $this->fulljid;
-			$_SESSION['XMPPHP_BOSH_inactivity'] = (string) $this->inactivity;			
-			$_SESSION['XMPPHP_BOSH_lat'] = (string) time();		
+			$_SESSION['XMPPHP_BOSH']['RID'] = (string) $this->rid;
+			$_SESSION['XMPPHP_BOSH']['SID'] = (string) $this->sid;
+			$_SESSION['XMPPHP_BOSH']['authed'] = (boolean) $this->authed;
+			$_SESSION['XMPPHP_BOSH']['basejid'] = (string) $this->basejid;
+			$_SESSION['XMPPHP_BOSH']['fulljid'] = (string) $this->fulljid;
+			$_SESSION['XMPPHP_BOSH']['inactivity'] = (string) $this->inactivity;			
+			$_SESSION['XMPPHP_BOSH']['lat'] = (string) time();		
 			
 			if($this->session=='ON_FILE'){
 				$session_file = sys_get_temp_dir()."/".$this->user."_".$this->server."_session";
@@ -242,13 +242,13 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 			if($this->session=='ON_FILE')
 				unlink(sys_get_temp_dir()."/".$this->user."_".$this->server."_session");
 			else{
-				unset($_SESSION['XMPPHP_BOSH_RID']);
-				unset($_SESSION['XMPPHP_BOSH_SID']);
-				unset($_SESSION['XMPPHP_BOSH_authed']);
-				unset($_SESSION['XMPPHP_BOSH_basejid']);
-				unset($_SESSION['XMPPHP_BOSH_fulljid']);
-				unset($_SESSION['XMPPHP_BOSH_inactivity']);
-				unset($_SESSION['XMPPHP_BOSH_lat']);
+				unset($_SESSION['XMPPHP_BOSH']['RID']);
+				unset($_SESSION['XMPPHP_BOSH']['SID']);
+				unset($_SESSION['XMPPHP_BOSH']['authed']);
+				unset($_SESSION['XMPPHP_BOSH']['basejid']);
+				unset($_SESSION['XMPPHP_BOSH']['fulljid']);
+				unset($_SESSION['XMPPHP_BOSH']['inactivity']);
+				unset($_SESSION['XMPPHP_BOSH']['lat']);
 			}
 		}
 }
