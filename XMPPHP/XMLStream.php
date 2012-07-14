@@ -465,7 +465,7 @@ class XMPPHP_XMLStream {
 					}
 					$part = fread($this->socket, 4096);
 					stream_set_blocking($this->socket, 1);
-					if ($part == FALSE) {
+					if ($part === FALSE) {
 						if($this->reconnect) {
 							$this->doReconnect();
 						} else {
@@ -476,7 +476,7 @@ class XMPPHP_XMLStream {
 					}
 					$this->log->log("RECV: $part",  XMPPHP_Log::LEVEL_VERBOSE);
 					$buff .= $part;
-				} while (!$this->bufferComplete($buff));
+				} while (!$this->bufferComplete($buff) && !feof($this->socket));
 
 				xml_parse($this->parser, $buff, false);
 				if ($return_when_received) {
