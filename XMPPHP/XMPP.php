@@ -511,7 +511,10 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 			$groups = array();
 			if ($item->name == 'item') {
 				$jid = $item->attrs['jid']; //REQUIRED
-				$name = $item->attrs['name']; //MAY
+				if (isset($item->attrs['name']) && !empty($item->attrs['name']))
+					$name = $item->attrs['name']; //MAY
+				else
+					$name = '';
 				$subscription = $item->attrs['subscription'];
 				foreach($item->subs as $subitem) {
 					if ($subitem->name == 'group') {
