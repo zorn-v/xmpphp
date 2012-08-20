@@ -148,7 +148,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 		$this->addXPathHandler('{urn:ietf:params:xml:ns:xmpp-tls}proceed', 'tls_proceed_handler');
 		$this->addXPathHandler('{jabber:client}message', 'message_handler');
 		$this->addXPathHandler('{jabber:client}presence', 'presence_handler');
-		$this->addXPathHandler('iq/{jabber:iq:roster}query', 'roster_iq_handler');
+
 		// For DIGEST-MD5 auth :
 		$this->addXPathHandler('{urn:ietf:params:xml:ns:xmpp-sasl}challenge', 'sasl_challenge_handler');
 	}
@@ -492,6 +492,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 	*/
 	public function getRoster() {
 		$id = $this->getID();
+		$this->addIdHandler($id, 'roster_iq_handler');
 		$this->send("<iq xmlns='jabber:client' type='get' id='$id'><query xmlns='jabber:iq:roster' /></iq>");
 	}
 
