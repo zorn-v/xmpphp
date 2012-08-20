@@ -531,6 +531,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 		if ($xml->attrs['type'] == 'set') {
 			$this->send("<iq type=\"result\" id=\"{$xml->attrs['id']}\" to=\"{$xml->attrs['from']}\" />");
 		}
+		$this->event('roster_received');
 	}
 
 	/**
