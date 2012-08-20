@@ -450,8 +450,10 @@ class XMPPHP_XMLStream {
 				if ($this->reconnect) {
 					$this->doReconnect();
 				} else {
-					fclose($this->socket);
+					if (!empty($this->socket))
+						fclose($this->socket);
 					$this->socket = NULL;
+					$this->disconnected = TRUE;
 					return false;
 				}
 			} else if ($updated > 0) {
