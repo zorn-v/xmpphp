@@ -423,43 +423,43 @@ class XMPPHP_XMLStream {
     return $this->disconnected;
   }
 
-	/**
-	 * Checks if the given string is closed with the same tag as it is
-	 * opened. We try to be as fast as possible here.
-	 *
-	 * @param string $buff Read buffer of __process()
-	 *
-	 * @return boolean true if the buffer seems to be complete
-	 */
-	protected function bufferComplete($buff)
-	{
-		if (substr($buff, -1) != '>') {
-			return false;
-		}
-		//we always have a space since the namespace needs to be
-		//declared. could be a tab, though
-		$start = substr(
-			$buff, 1,
-			min(strpos($buff, '>', 2), strpos($buff, ' ', 2)) - 1
-		);
-		$stop  = substr($buff, -strlen($start) - 3);
+  /**
+   * Checks if the given string is closed with the same tag as it is
+   * opened. We try to be as fast as possible here.
+   *
+   * @param string $buff Read buffer of __process()
+   *
+   * @return boolean true if the buffer seems to be complete
+   */
+  protected function bufferComplete($buff) {
 
-		if ($start == '?xml' || substr($start,-6) == 'stream' ) {
-			//starting with an xml tag. this means a stream is being
-			// opened, which is not much of data, so no fear it's
-			// not complete
-			return true;
-		}
-		if (substr($stop, -2) == '/>') {
-			//one tag, i.e. <success />
-			return true;
-		}
-		if ('</' . $start . '>' == $stop) {
-			return true;
-		}
+    if (substr($buff, -1) != '>') {
+      return false;
+    }
 
-		return false;
-	}
+    // We always have a space since the namespace needs to be declared.
+    // Could be a tab, though
+    $min   = min(strpos($buff, '>', 2), strpos($buff, ' ', 2)) - 1;
+    $start = substr($buff, 1, $min);
+    $stop  = substr($buff, -strlen($start) - 3);
+
+    if ($start == '?xml' OR substr($start, -6) == 'stream') {
+      // Starting with an xml tag. this means a stream is being opened,
+      // which is not much of data, so no fear it's not complete
+      return true;
+    }
+
+    if (substr($stop, -2) == '/>') {
+      // One tag, i.e. <success />
+      return true;
+    }
+
+    if ('</' . $start . '>' == $stop) {
+      return true;
+    }
+
+    return false;
+  }
 
 	/**
 	 * Core reading tool
