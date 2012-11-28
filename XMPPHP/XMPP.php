@@ -552,46 +552,56 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $this->send('<iq xmlns="jabber:client" type="get" id="' . $id . '"><query xmlns="jabber:iq:roster" /></iq>');
   }
 
-	/**
-	* Roster iq handler
-	* Gets all packets matching XPath "iq/{jabber:iq:roster}query'
-	*
-	* Implements RFC3921, 7.4. "Adding a Roster Item"
-	*
-	* @param string $xml
-	*/
-	protected function roster_iq_handler($xml) {
-		$status = "result";
-		$xmlroster = $xml->sub('query');
-		foreach($xmlroster->subs as $item) {
-			$groups = array();
-			if ($item->name == 'item') {
-				$jid = $item->attrs['jid']; //REQUIRED
-				if (isset($item->attrs['name']) && !empty($item->attrs['name']))
-					$name = $item->attrs['name']; //MAY
-				else
-					$name = '';
-				$subscription = $item->attrs['subscription'];
-				foreach($item->subs as $subitem) {
-					if ($subitem->name == 'group') {
-						$groups[] = $subitem->data;
-					}
-				}
-				$contacts[] = array($jid, $subscription, $name, $groups); //Store for action if no errors happen
-			} else {
-				$status = "error";
-			}
-		}
-		if ($status == "result") { //No errors, add contacts
-			foreach($contacts as $contact) {
-				$this->roster->addContact($contact[0], $contact[1], $contact[2], $contact[3]);
-			}
-		}
-		if ($xml->attrs['type'] == 'set') {
-			$this->send("<iq type=\"result\" id=\"{$xml->attrs['id']}\" to=\"{$xml->attrs['from']}\" />");
-		}
-		$this->event('roster_received');
-	}
+  /**
+   * Roster iq handler
+   * Gets all packets matching XPath "iq/{jabber:iq:roster}query'
+   *
+   * Implements RFC3921, 7.4. "Adding a Roster Item"
+   *
+   * @param string $xml
+   */
+  protected function roster_iq_handler($xml) {
+
+    $status    = 'result';
+    $xmlroster = $xml->sub('query');
+
+    foreach ($xmlroster->subs as $item) {
+
+      $groups = array();
+      if ($item->name == 'item') {
+        $jid = $item->attrs['jid']; // REQUIRED
+        if (isset($item->attrs['name']) AND !empty($item->attrs['name'])) {
+          $name = $item->attrs['name']; // MAY
+        }
+        else {
+          $name = '';
+        }
+        $subscription = $item->attrs['subscription'];
+        foreach ($item->subs as $subitem) {
+          if ($subitem->name == 'group') {
+            $groups[] = $subitem->data;
+          }
+        }
+        $contacts[] = array($jid, $subscription, $name, $groups); //Store for action if no errors happen
+      }
+      else {
+        $status = 'error';
+      }
+    }
+
+    if ($status == 'result') { // No errors, add contacts
+      foreach ($contacts as $contact) {
+        $this->roster->addContact($contact[0], $contact[1], $contact[2], $contact[3]);
+      }
+    }
+
+    if ($xml->attrs['type'] == 'set') {
+      $sprintf = '<iq type="result" id="%s" to="%s" />';
+      $this->send(sprintf($sprintf, $xml->attrs['id'], $xml->attrs['from']));
+    }
+
+    $this->event('roster_received');
+  }
 
 	/**
 	 * Session start handler
