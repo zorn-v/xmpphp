@@ -157,39 +157,51 @@ class XMPPHP_XMLObj {
     return false;
   }
 
-	/**
-	 * Return a sub
-	 *
-	 * @param string $name
-	 * @param string $attrs
-	 * @param string $ns
-	 */
-	public function sub($name, $attrs = null, $ns = null) {
-		#TODO attrs is ignored
-		foreach($this->subs as $sub) {
-			if($sub->name == $name and ($ns == null or $sub->ns == $ns)) {
-				return $sub;
-			}
-		}
-	}
-	
-	// Find and return one or more sub
-	public function getSubs($name = "*", $attrs = null, $ns = null, $stop_at_first = false){
-		$subs = false;
-		foreach($this->subs as $sub) 
-			if(($name == "*" or $sub->name == $name) and ($ns == null or $sub->ns == $ns) and ($attrs == null or $sub->hasAttrs($attrs))){
-				$subs[] = $sub;
-				if($stop_at_first)
-				 	return $subs;
-			}
-		return $subs;
-	}
-	
-	public function hasAttrs($attrs){
-		foreach($attrs as $attr=>$value)
-			if($this->attrs[strtolower($attr)]!=$value) 
-				return false;	
-		return true;
-	}
+  /**
+   * Return a sub
+   *
+   * @param string $name
+   * @param string $attrs
+   * @param string $ns
+   */
+  public function sub($name, $attrs = null, $ns = null) {
 
+    // TODO attrs is ignored
+    foreach ($this->subs as $sub) {
+      if ($sub->name == $name AND ($ns == null OR $sub->ns == $ns)) {
+        return $sub;
+      }
+    }
+  }
+
+  // Find and return one or more sub
+  public function getSubs($name = '*', $attrs = null, $ns = null, $stop_at_first = false) {
+
+    $subs = false;
+
+    foreach ($this->subs as $sub) {
+
+      if (($name == '*' OR $sub->name == $name) AND ($ns == null OR $sub->ns == $ns) AND ($attrs == null OR $sub->hasAttrs($attrs))) {
+
+        $subs[] = $sub;
+
+        if ($stop_at_first) {
+          return $subs;
+        }
+      }
+    }
+
+    return $subs;
+  }
+
+  public function hasAttrs($attrs) {
+
+    foreach ($attrs as $attr => $value) {
+      if ($this->attrs[strtolower($attr)] != $value) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 }
