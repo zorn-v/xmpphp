@@ -689,20 +689,22 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 
     return $output;
   }
-	
-	protected function room_join_handler($xml) {
-		$this->event('room_joined');
-	}
-	
-	/**
-	* join a room for multi-chat (or create one if not exists)
-	*
-	* @param string $name room name
-	* @param string $service hostname of the chat service
-	* @param string $password
-	*/
-	public function joinRoom($room=null, $service=null, $password=null){
-		if($password!=null) $password = "<password>$password</password>";
-		$this->presence(null,null,"$room@$service/{$this->user}",null,null,$this->x('http://jabber.org/protocol/muc',$password));
-	}
+
+  protected function room_join_handler($xml) {
+    $this->event('room_joined');
+  }
+
+  /**
+   * Join a room for multi-chat (or create one if not exists)
+   *
+   * @param string $name room name
+   * @param string $service hostname of the chat service
+   * @param string $password
+   */
+  public function joinRoom($room = null, $service = null, $password = null) {
+    if ($password != null) {
+      $password = '<password>' . $password . '</password>';
+    }
+    $this->presence(null, null, $room . '@' . $service . '/' . $this->user, null, null, $this->x('http://jabber.org/protocol/muc', $password));
+  }
 }
