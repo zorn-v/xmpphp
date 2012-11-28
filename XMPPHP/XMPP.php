@@ -44,76 +44,81 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Roster.php';
  * @version   $Id$
  */
 class XMPPHP_XMPP extends XMPPHP_XMLStream {
-	/**
-	 * @var string
-	 */
-	public $server;
 
-	/**
-	 * @var string
-	 */
-	public $user;
-	
-	/**
-	 * @var string
-	 */
-	protected $password;
-	
-	/**
-	 * @var string
-	 */
-	protected $resource;
-	
-	/**
-	 * @var string
-	 */
-	protected $fulljid;
-	
-	/**
-	 * @var string
-	 */
-	protected $basejid;
-	
-	/**
-	 * @var boolean
-	 */
-	protected $authed = false;
-	protected $session_started = false;
-	
-	/**
-	 * @var boolean
-	 */
-	protected $auto_subscribe = false;
-	
-	/**
-	 * @var boolean
-	 */
-	protected $use_encryption = true;
-	
-	/**
-	 * @var boolean
-	 */
-	public $track_presence = true;
-	
-	/**
-	 * @var object
-	 */
-	public $roster;
+  /**
+   * @var string
+   */
+  public $server;
 
-	/**
-	 * @var array supported auth mechanisms
-	 */
-	protected $auth_mechanism_supported = array('PLAIN', 'DIGEST-MD5');
+  /**
+   * @var string
+   */
+  public $user;
 
-	/**
-	 * @var string default auth mechanism
-	 */
-	protected $auth_mechanism_default = 'PLAIN';
+  /**
+   * @var string
+   */
+  protected $password;
 
-	/**
-	 * @var string prefered auth mechanism
-	 */
-	protected $auth_mechanism_preferred = 'DIGEST-MD5';
+  /**
+   * @var string
+   */
+  protected $resource;
+
+  /**
+   * @var string
+   */
+  protected $fulljid;
+
+  /**
+   * @var string
+   */
+  protected $basejid;
+
+  /**
+   * @var boolean
+   */
+  protected $authed = false;
+
+  /**
+   * @var boolean
+   */
+  protected $session_started = false;
+
+  /**
+   * @var boolean
+   */
+  protected $auto_subscribe = false;
+
+  /**
+   * @var boolean
+   */
+  protected $use_encryption = true;
+
+  /**
+   * @var boolean
+   */
+  public $track_presence = true;
+
+  /**
+   * @var object
+   */
+  public $roster;
+
+  /**
+   * @var array supported auth mechanisms
+   */
+  protected $auth_mechanism_supported = array('PLAIN', 'DIGEST-MD5');
+
+  /**
+   * @var string default auth mechanism
+   */
+  protected $auth_mechanism_default = 'PLAIN';
+
+  /**
+   * @var string prefered auth mechanism
+   */
+  protected $auth_mechanism_preferred = 'DIGEST-MD5';
 
 	/**
 	 * Constructor
