@@ -32,14 +32,13 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'XMPP.php';
 
 /**
  * XMPPHP Main Class
- * 
- * @category   xmpphp 
- * @package	XMPPHP
- * @author	 Nathanael C. Fritz <JID: fritzy@netflint.net>
- * @author	 Stephan Wentz <JID: stephan@jabber.wentz.it>
- * @author	 Michael Garvin <JID: gar@netflint.net>
- * @copyright  2008 Nathanael C. Fritz
- * @version	$Id$
+ *
+ * @package   XMPPHP
+ * @author    Nathanael C. Fritz <JID: fritzy@netflint.net>
+ * @author    Stephan Wentz <JID: stephan@jabber.wentz.it>
+ * @author    Michael Garvin <JID: gar@netflint.net>
+ * @copyright 2008 Nathanael C. Fritz
+ * @version   $Id$
  */
 class XMPPHP_BOSH extends XMPPHP_XMPP {
 
