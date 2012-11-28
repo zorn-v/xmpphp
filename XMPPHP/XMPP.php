@@ -162,14 +162,14 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $this->addXPathHandler('{urn:ietf:params:xml:ns:xmpp-sasl}challenge', 'sasl_challenge_handler');
   }
 
-	/**
-	 * Turn encryption on/ff
-	 *
-	 * @param boolean $useEncryption
-	 */
-	public function useEncryption($useEncryption = true) {
-		$this->use_encryption = $useEncryption;
-	}
+  /**
+   * Turn encryption on/ff
+   *
+   * @param boolean $useEncryption
+   */
+  public function useEncryption($useEncryption = true) {
+    $this->use_encryption = $useEncryption;
+  }
 
 	/**
 	 * Turn on auto-authorization of subscription requests.
