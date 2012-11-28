@@ -856,49 +856,61 @@ class XMPPHP_XMLStream {
     }
   }
 
-	/**
-	 * XML character callback
-	 * @see xml_set_character_data_handler
-	 *
-	 * @param resource $parser
-	 * @param string   $data
-	 */
-	public function charXML($parser, $data) {
-		if(array_key_exists($this->xml_depth, $this->xmlobj)) {
-			$this->xmlobj[$this->xml_depth]->data .= $data;
-		}
-	}
+  /**
+   * XML character callback
+   * @see xml_set_character_data_handler
+   *
+   * @param resource $parser
+   * @param string   $data
+   */
+  public function charXML($parser, $data) {
+    if (array_key_exists($this->xml_depth, $this->xmlobj)) {
+      $this->xmlobj[$this->xml_depth]->data .= $data;
+    }
+  }
 
-	/**
-	 * Event?
-	 *
-	 * @param string $name
-	 * @param string $payload
-	 */
-	public function event($name, $payload = null) {
-		$this->log->log("EVENT: $name",  XMPPHP_Log::LEVEL_DEBUG);
-		foreach($this->eventhandlers as $handler) {
-			if($name == $handler[0]) {
-				if($handler[2] === null) {
-					$handler[2] = $this;
-				}
-				$handler[2]->$handler[1]($payload);
-			}
-		}
-		if( $this->until != null )
-		foreach($this->until as $key => $until) {
-			if(is_array($until)) {
-				if(in_array($name, $until)) {
-					$this->until_payload[$key][] = array($name, $payload);
-					if(!isset($this->until_count[$key])) {
-						$this->until_count[$key] = 0;
-					}
-					$this->until_count[$key] += 1;
-					#$this->until[$key] = false;
-				}
-			}
-		}
-	}
+  /**
+   * Event?
+   *
+   * @param string $name
+   * @param string $payload
+   */
+  public function event($name, $payload = null) {
+
+    $this->log->log('EVENT: ' . $name,  XMPPHP_Log::LEVEL_DEBUG);
+
+    foreach ($this->eventhandlers as $handler) {
+
+      if ($name == $handler[0]) {
+
+        if ($handler[2] === null) {
+          $handler[2] = $this;
+        }
+
+        $handler[2]->$handler[1]($payload);
+      }
+    }
+
+    if ($this->until != null) {
+
+      foreach($this->until as $key => $until) {
+
+        if (is_array($until)) {
+
+          if (in_array($name, $until)) {
+
+            $this->until_payload[$key][] = array($name, $payload);
+
+            if (!isset($this->until_count[$key])) {
+              $this->until_count[$key] = 0;
+            }
+            $this->until_count[$key] += 1;
+            // $this->until[$key] = false;
+          }
+        }
+      }
+    }
+  }
 
 	/**
 	 * Read from socket
