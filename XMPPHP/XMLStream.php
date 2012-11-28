@@ -576,49 +576,51 @@ class XMPPHP_XMLStream {
 
     return true;
   }
-	
-	/**
-	 * Process
-	 *
-	 * @return string
-	 */
-	public function process() {
-		$this->__process(NULL);
-	}
 
-	/**
-	 * Process until a timeout occurs
-	 *
-	 * @param integer $timeout Time in seconds
-	 *
-	 * @return string
-	 *
-	 * @see __process()
-	 */
-	public function processTime($timeout=NULL) {
-		if (is_null($timeout)) {
-			return $this->__process(NULL);
-		} else {
-			return $this->__process($timeout * 1000000);
-		}
-	}
-	
-	/**
-	 * Process until next event or a timeout occurs
-	 *
-	 * @param integer $timeout Time in seconds
-	 *
-	 * @return string
-	 *
-	 * @see __process()
-	 */
-	public function processUntilNext($timeout=NULL) {
-		if (is_null($timeout)) {
-			return $this->__process(NULL, TRUE);
-		} else {
-			return $this->__process($timeout * 1000000, TRUE);
-		}
-	}
+  /**
+   * Process
+   *
+   * @return string
+   */
+  public function process() {
+    $this->__process(null);
+  }
+
+  /**
+   * Process until a timeout occurs
+   *
+   * @param integer $timeout Time in seconds
+   *
+   * @return string
+   *
+   * @see __process()
+   */
+  public function processTime($timeout = null) {
+    if (is_null($timeout)) {
+      return $this->__process(null);
+    }
+    else {
+      return $this->__process($timeout * 1000000);
+    }
+  }
+
+  /**
+   * Process until next event or a timeout occurs
+   *
+   * @param integer $timeout Time in seconds
+   *
+   * @return string
+   *
+   * @see __process()
+   */
+  public function processUntilNext($timeout=null) {
+    if (is_null($timeout)) {
+      return $this->__process(null, true);
+    }
+    else {
+      return $this->__process($timeout * 1000000, true);
+    }
+  }
 
 	/**
 	 * Process until a specified event or a timeout occurs
