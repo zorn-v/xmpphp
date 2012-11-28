@@ -463,55 +463,65 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     throw new XMPPHP_Exception('Auth failed!');
   }
 
-	/**
-	 * Handle challenges for DIGEST-MD5 auth
-	 *
-	 * @param string $xml
-	 */
-	protected function sasl_challenge_handler($xml) {
-		// Decode and parse the challenge string
-		// (may be something like foo="bar",foo2="bar2,bar3,bar4",foo3=bar5 )
-		$challenge = base64_decode($xml->data);
-		$vars = array();
-		$matches = array();
-		preg_match_all('/(\w+)=(?:"([^"]*)|([^,]*))/', $challenge, $matches);
-		$res = array();
-		foreach ($matches[1] as $k => $v) {
-			$vars[$v] = (empty($matches[2][$k])?$matches[3][$k]:$matches[2][$k]);
-		}
+  /**
+   * Handle challenges for DIGEST-MD5 auth
+   *
+   * @param string $xml
+   */
+  protected function sasl_challenge_handler($xml) {
 
-		if (isset($vars['nonce'])) {
-			// First step
-			$vars['cnonce'] = uniqid(mt_rand(), false);
-			$vars['nc']     = '00000001';
-			$vars['qop']    = 'auth'; // Force qop to auth
-			if (!isset($vars['digest-uri'])) $vars['digest-uri'] = 'xmpp/' . $this->server;
-			if (!isset($vars['realm'])) $vars['realm'] = '';
+    // Decode and parse the challenge string
+    // (may be something like foo="bar", foo2="bar2,bar3,bar4", foo3=bar5)
+    $challenge = base64_decode($xml->data);
+    $vars      = array();
+    $matches   = array();
+    $res       = array();
+    preg_match_all('/(\w+)=(?:"([^"]*)|([^,]*))/', $challenge, $matches);
 
-			// now, the magic...
-			$a1 = sprintf('%s:%s:%s', $this->user, $vars['realm'], $this->password);
-			if ($vars['algorithm'] == 'md5-sess') {
-				$a1 = pack('H32',md5($a1)) . ':' . $vars['nonce'] . ':' . $vars['cnonce'];
-			}
-			$a2 = "AUTHENTICATE:" . $vars['digest-uri'];
-			$password = md5($a1) . ':' . $vars['nonce'] . ':' . $vars['nc'] . ':' . $vars['cnonce'] . ':' . $vars['qop'] . ':' .md5($a2);
-			$password = md5($password);
-			$response = sprintf('username="%s",realm="%s",nonce="%s",cnonce="%s",nc=%s,qop=%s,digest-uri="%s",response=%s,charset=utf-8',
-				$this->user, $vars['realm'], $vars['nonce'], $vars['cnonce'], $vars['nc'], $vars['qop'], $vars['digest-uri'], $password);
+    foreach ($matches[1] as $k => $v) {
+      $vars[$v] = (empty($matches[2][$k])) ? $matches[3][$k] : $matches[2][$k];
+    }
+    $this->log->log('ARROZ CON ABICHUELAS: ' . str_repeat('-', 120));
+    if (isset($vars['nonce'])) {
 
-			// Send the response
-			$response = base64_encode($response);
-			$this->send("<response xmlns='urn:ietf:params:xml:ns:xmpp-sasl'>$response</response>");
-		} else {
-			if (isset($vars['rspauth'])) {
-				// Second step
-				$this->send("<response xmlns='urn:ietf:params:xml:ns:xmpp-sasl'/>");
-			} else {
-				$this->log->log("ERROR receiving challenge : " . $challenge, XMPPHP_Log::LEVEL_ERROR);
-			}
+      // First step
+      $vars['cnonce'] = uniqid(mt_rand(), false);
+      $vars['nc']     = '00000001';
+      $vars['qop']    = 'auth'; // Force qop to auth
 
-		}
-	}
+      if (!isset($vars['digest-uri'])) {
+        $vars['digest-uri'] = 'xmpp/' . $this->server;
+      }
+      if (!isset($vars['realm'])) {
+        $vars['realm'] = '';
+      }
+
+      // Now, the magic...
+      $a1 = sprintf('%s:%s:%s', $this->user, $vars['realm'], $this->password);
+      if ($vars['algorithm'] == 'md5-sess') {
+        $a1 = pack('H32', md5($a1)) . ':' . $vars['nonce'] . ':' . $vars['cnonce'];
+      }
+
+      $a2       = 'AUTHENTICATE:' . $vars['digest-uri'];
+      $password = md5(sprintf('%s:%s:%s:%s:%s:%s', md5($a1), $vars['nonce'], $vars['nc'], $vars['cnonce'], $vars['qop'], md5($a2)));
+      $sprintf  = 'username="%s",realm="%s",nonce="%s",cnonce="%s",nc="%s",qop="%s",digest-uri="%s",response="%s",charset="utf-8"';
+      $response = sprintf($sprintf, $this->user, $vars['realm'], $vars['nonce'], $vars['cnonce'], $vars['nc'], $vars['qop'], $vars['digest-uri'], $password);
+
+      // Send the response
+      $response = base64_encode($response);
+      $this->send('<response xmlns="urn:ietf:params:xml:ns:xmpp-sasl">' . $response . '</response>');
+    }
+    else {
+
+      if (isset($vars['rspauth'])) {
+        // Second step
+        $this->send('<response xmlns="urn:ietf:params:xml:ns:xmpp-sasl" />');
+      }
+      else {
+        $this->log->log('ERROR receiving challenge : ' . $challenge, XMPPHP_Log::LEVEL_ERROR);
+      }
+    }
+  }
 
 	/**
 	 * Resource bind handler
