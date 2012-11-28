@@ -625,19 +625,18 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $this->reset();
   }
 
-	/**
-	* Retrieves the vcard
-	*
-	*/
-	public function getVCard($jid = Null) {
-		$id = $this->getID();
-		$this->addIdHandler($id, 'vcard_get_handler');
-		if($jid) {
-			$this->send("<iq type='get' id='$id' to='$jid'><vCard xmlns='vcard-temp' /></iq>");
-		} else {
-			$this->send("<iq type='get' id='$id'><vCard xmlns='vcard-temp' /></iq>");
-		}
-	}
+  /**
+   * Retrieves the vcard
+   *
+   */
+  public function getVCard($jid = null) {
+
+    $id      = $this->getID();
+    $this->addIdHandler($id, 'vcard_get_handler');
+    $jid     = ($jid) ? 'to="' . $jid . '"' : '';
+    $sprintf = '<iq type="get" id="%s" %s><vCard xmlns="vcard-temp" /></iq>';
+    $this->send(sprintf($sprintf, $id, $jid));
+  }
 
 	/**
 	* VCard retrieval handler
