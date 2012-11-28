@@ -461,96 +461,121 @@ class XMPPHP_XMLStream {
     return false;
   }
 
-	/**
-	 * Core reading tool
-	 *
-	 * @param mixed   $maximum Limit when to return
-	 *                         - 0: only read if data is immediately ready
-	 *                         - NULL: wait forever and ever
-	 *                         - integer: process for this amount of microseconds
-	 * @param boolean $return_when_received Immediately return when data have been
-	 *                                      received
-	 *
-	 * @return boolean True when all goes well, false when something fails
-	 */
-	protected function __process($maximum = 5, $return_when_received = false)
-	{
-		$remaining = $maximum;
-		$starttime = (microtime(true) * 1000000);		
-		do {
+  /**
+   * Core reading tool
+   *
+   * @param mixed   $maximum Limit when to return
+   *                         - 0: only read if data is immediately ready
+   *                         - null: wait forever and ever
+   *                         - integer: process for this amount of microseconds
+   * @param boolean $return_when_received Immediately return when data have been
+   *                                      received
+   *
+   * @return boolean true when all goes well, false when something fails
+   */
+  protected function __process($maximum = 5, $return_when_received = false) {
 
-			$read = array($this->socket);
-			$write = array();
-			$except = array();
-			if (is_null($maximum)) {
-				$secs = NULL;
-				$usecs = NULL;
-			} else if ($maximum == 0) {
-				$secs = 0;
-				$usecs = 0;
-			} else {
-				$usecs = $remaining % 1000000;
-				$secs = floor(($remaining - $usecs) / 1000000);
-			}
-			$updated = @stream_select($read, $write, $except, $secs, $usecs);
-			if ($updated === false) {
-				$this->log->log("Error on stream_select()",  XMPPHP_Log::LEVEL_VERBOSE);				
-				if ($this->reconnect) {
-					$this->doReconnect();
-				} else {
-					if (!empty($this->socket))
-						fclose($this->socket);
-					$this->socket = NULL;
-					$this->disconnected = TRUE;
-					return false;
-				}
-			} else if ($updated > 0) {
-				$buff = '';
-				do {
-					if ($buff != '') {
-						//disable blocking for now because fread() will
-						// block until the 4k are full if we already
-						// read a part of the packet
-						stream_set_blocking($this->socket, 0);
-					}
-					$part = fread($this->socket, 4096);
-					stream_set_blocking($this->socket, 1);
-					if ($part === false) {
-						if($this->reconnect) {
-							$this->doReconnect();
-						} else {
-							fclose($this->socket);
-							$this->socket = NULL;
-							return false;
-						}
-					}
-					// just to avoid a lot of blank fread result
-					if($part!='')
-						$this->log->log("RECV: $part",  XMPPHP_Log::LEVEL_VERBOSE);
-					$buff .= $part;
+    $remaining = $maximum;
 
-					$endtime = (microtime(true)*1000000);
-					$time_past = $endtime - $starttime;
-					$remaining = $remaining - $time_past;
+    if ($this->socket !== null) {
 
-				} while ( (is_null($maximum) || $remaining > 0) && !$this->bufferComplete($buff) );
+      do {
 
-				if(trim($buff) != ''){
-					xml_parse($this->parser, $buff, false);
-					if ($return_when_received) {
-						return true;
-					}
-				}
-			} else {
-				# $updated == 0 means no changes during timeout.
-			}
-			$endtime = (microtime(true)*1000000);
-			$time_past = $endtime - $starttime;
-			$remaining = $remaining - $time_past;
+        $starttime = (microtime(true) * 1000000);
+        $read      = array($this->socket);
+        $write     = array();
+        $except    = array();
 
-		} while (is_null($maximum) || $remaining > 0);
-		return true;
-	}
+        if (is_null($maximum)) {
+          $secs = null;
+          $usecs = null;
+        }
+        elseif ($maximum == 0) {
+          $secs  = 0;
+          $usecs = 0;
+        }
+        else {
+          $usecs = $remaining % 1000000;
+          $secs  = floor(($remaining - $usecs) / 1000000);
+        }
+
+        $updated = stream_select($read, $write, $except, $secs, $usecs);
+
+        if ($updated === false) {
+
+          $this->log->log('Error on stream_select()',  XMPPHP_Log::LEVEL_VERBOSE);
+
+          if ($this->reconnect) {
+            $this->doReconnect();
+          }
+          else {
+            if (!empty($this->socket)) {
+              fclose($this->socket);
+            }
+            $this->socket       = null;
+            $this->disconnected = true;
+
+            return false;
+          }
+        }
+        elseif ($updated > 0) {
+
+          $buff = '';
+
+          do {
+
+            if ($buff != '') {
+              // Disable blocking for now because fread() will block until
+              // the 4k are full if we already read a part of the packet
+              stream_set_blocking($this->socket, 0);
+            }
+
+            $part = fread($this->socket, 4096);
+            stream_set_blocking($this->socket, 1);
+
+            if ($part === false) {
+              if ($this->reconnect) {
+                $this->doReconnect();
+              }
+              else {
+                fclose($this->socket);
+                $this->socket = null;
+
+                return false;
+              }
+            }
+            // just to avoid a lot of blank fread result
+            if (trim($part) != '') {
+              $this->log->log('RECV: ' . $part,  XMPPHP_Log::LEVEL_VERBOSE);
+            }
+            $buff .= $part;
+
+            $endtime   = (microtime(true) * 1000000);
+            $time_past = $endtime - $starttime;
+            $remaining = $remaining - $time_past;
+
+          } while ((is_null($maximum) OR $remaining > 0) AND !$this->bufferComplete($buff));
+        }
+
+        if (trim($buff) != '') {
+          xml_parse($this->parser, $buff, false);
+          if ($return_when_received) {
+            return true;
+          }
+        }
+        else {
+          // $updated == 0 means no changes during timeout.
+        }
+
+        $endtime   = (microtime(true) * 1000000);
+        $time_past = $endtime - $starttime;
+        $remaining = $remaining - $time_past;
+
+      } while (is_null($maximum) OR $remaining > 0);
+    }
+
+    return true;
+  }
 	
 	/**
 	 * Process
