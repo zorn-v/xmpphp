@@ -193,35 +193,50 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
     return $xml;
   }
 
-		//null params are not used and just to statify Strict Function Declaration
-		public function __process($null1=NULL,$null2=NULL) {
-			if($this->http_buffer) {
-				$this->__parseBuffer();
-			} else {
-				$this->__sendBody();
-				$this->__parseBuffer();
-			}
+  /**
+   * Process
+   *
+   * @param $null1
+   * @param $null2
+   *
+   * null params are not used and just to statify Strict Function Declaration
+   */
+  public function __process($null1 = null, $null2 = null) {
 
-			$this->saveSession();
-			return true;
-		}
+    if ($this->http_buffer) {
+      $this->__parseBuffer();
+    }
+    else {
+      $this->__sendBody();
+      $this->__parseBuffer();
+    }
 
-		public function __parseBuffer() {
-			while ($this->http_buffer) {
-				$idx = key($this->http_buffer);
-				$buffer = $this->http_buffer[$idx];
-				unset($this->http_buffer[$idx]);
-				if($buffer) {
-					$xml = new SimpleXMLElement($buffer);
-					$children = $xml->xpath('child::node()');
-					foreach ($children as $child) {
-						$buff = $child->asXML();
-						$this->log->log("RECV: $buff",  XMPPHP_Log::LEVEL_VERBOSE);
-						xml_parse($this->parser, $buff, false);
-					}
-				}
-			}
-		}
+    $this->saveSession();
+
+    return true;
+  }
+
+  public function __parseBuffer() {
+
+    while ($this->http_buffer) {
+
+      $idx    = key($this->http_buffer);
+      $buffer = $this->http_buffer[$idx];
+      unset($this->http_buffer[$idx]);
+
+      if ($buffer) {
+
+        $xml      = new SimpleXMLElement($buffer);
+        $children = $xml->xpath('child::node()');
+
+        foreach ($children as $child) {
+          $buff = $child->asXML();
+          $this->log->log('RECV: ' . $buff,  XMPPHP_Log::LEVEL_VERBOSE);
+          xml_parse($this->parser, $buff, false);
+        }
+      }
+    }
+  }
 
 		//null params are not used and just to statify Strict Function Declaration
 		public function send($msg,$null1=NULL) {
