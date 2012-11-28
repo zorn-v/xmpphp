@@ -603,16 +603,16 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $this->event('roster_received');
   }
 
-	/**
-	 * Session start handler
-	 *
-	 * @param string $xml
-	 */
-	protected function session_start_handler($xml) {
-		$this->log->log("Session started");
-		$this->session_started = true;
-		$this->event('session_start');
-	}
+  /**
+   * Session start handler
+   *
+   * @param string $xml
+   */
+  protected function session_start_handler($xml) {
+    $this->log->log('Session started');
+    $this->session_started = true;
+    $this->event('session_start');
+  }
 
 	/**
 	 * TLS proceed handler
