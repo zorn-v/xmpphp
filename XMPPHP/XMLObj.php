@@ -140,18 +140,22 @@ class XMPPHP_XMLObj {
     return $string;
   }
 
-	/**
-	 * Has this XML Object the given sub?
-	 * 
-	 * @param string $name
-	 * @return boolean
-	 */
-	public function hasSub($name, $ns = null) {
-		foreach($this->subs as $sub) {
-			if(($name == "*" or $sub->name == $name) and ($ns == null or $sub->ns == $ns)) return true;
-		}
-		return false;
-	}
+  /**
+   * Has this XML Object the given sub?
+   *
+   * @param string $name
+   * @return boolean
+   */
+  public function hasSub($name, $ns = null) {
+
+    foreach ($this->subs as $sub) {
+      if (($name == '*' OR $sub->name == $name) AND ($ns == null OR $sub->ns == $ns)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 
 	/**
 	 * Return a sub
