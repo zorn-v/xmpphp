@@ -216,15 +216,15 @@ class XMPPHP_XMLStream {
     $this->log       = new XMPPHP_Log($printlog, $loglevel);
   }
 
-	/**
-	 * Destructor
-	 * Cleanup connection
-	 */
-	public function __destruct() {
-		if(!$this->disconnected && $this->socket) {
-			$this->disconnect();
-		}
-	}
+  /**
+   * Destructor
+   * Cleanup connection
+   */
+  public function __destruct() {
+    if (!$this->disconnected AND $this->socket) {
+      $this->disconnect();
+    }
+  }
 	
 	/**
 	 * Return the log instance
