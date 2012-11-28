@@ -266,28 +266,29 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $this->sendIq(null, 'set', 'jabber:iq:roster', $payload);
   }
 
-	/**
-	 * Send ID action
-	 *
-	 * @param string $to to jid
-	 * @param string $type type of ID
-	 * @param string $xmlns xmlns name
-	 * @param string $payload payload string
-	 * @param string $from from jid
-	 */
-	private function sendIq($to = NULL, $type = 'get', $xmlns = NULL, $payload = NULL, $from = NULL,$id = null)
-	{
-		if($id == null) $id = $this->getID();
-		$xml = "<iq type='$type' id='$id'".
-		($to ? " to='$to'" : '').
-		($from ? " from='$from'" : '').
-		">
-			<query xmlns='$xmlns'>
-				$payload
-			</query>
-			</iq>";
-		return $this->send($xml);
-	}
+  /**
+   * Send ID action
+   *
+   * @param string $to to jid
+   * @param string $type type of ID
+   * @param string $xmlns xmlns name
+   * @param string $payload payload string
+   * @param string $from from jid
+   */
+  private function sendIq($to = null, $type = 'get', $xmlns = null, $payload = null, $from = null, $id = null) {
+
+    if ($id == null) {
+      $id = $this->getID();
+    }
+
+    $to      = htmlspecialchars($to);
+    $to      = ($to) ? 'to="' . $to . '"' : '';
+    $from    = ($from) ? 'from="' . $from . '"' : '';
+    $sprintf = '<iq type="%s" id="%s" %s %s><query xmlns="%s">%s</query></iq>';
+    $xml     = sprintf($sprintf, $type, $id, $to, $from, $xmlns, $payload);
+
+    return $this->send($xml);
+  }
 
 	/**
 	 * Message handler
