@@ -180,32 +180,30 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $this->auto_subscribe = $autoSubscribe;
   }
 
-	/**
-	 * Send XMPP Message
-	 *
-	 * @param string $to
-	 * @param string $body
-	 * @param string $type
-	 * @param string $subject
-	 */
-	public function message($to, $body, $type = 'chat', $subject = null, $payload = null) {
-	    if(is_null($type))
-	    {
-	        $type = 'chat';
-	    }
-	    
-		$to	  = htmlspecialchars($to);
-		$body	= htmlspecialchars($body);
-		$subject = htmlspecialchars($subject);
-		
-		$out = "<message from=\"{$this->fulljid}\" to=\"$to\" type='$type'>";
-		if($subject) $out .= "<subject>$subject</subject>";
-		$out .= "<body>$body</body>";
-		if($payload) $out .= $payload;
-		$out .= "</message>";
-		
-		$this->send($out);
-	}
+  /**
+   * Send XMPP Message
+   *
+   * @param string $to
+   * @param string $body
+   * @param string $type
+   * @param string $subject
+   */
+  public function message($to, $body, $type = 'chat', $subject = null, $payload = null) {
+
+    if (is_null($type)) {
+      $type = 'chat';
+    }
+
+    $to      = htmlspecialchars($to);
+    $body    = htmlspecialchars($body);
+    $subject = htmlspecialchars($subject);
+    $subject = ($subject) ? '<subject>' . $subject . '</subject>' : '';
+    $payload = ($payload) ? $payload : '';
+    $sprintf = '<message from="%s" to="%s" type="%s">%s<body>%s</body>%s</message>';
+    $output  = sprintf($sprintf, $this->fulljid, $to, $type, $subject, $body, $payload);
+
+    $this->send($output);
+  }
 
 	/**
 	 * Set Presence
