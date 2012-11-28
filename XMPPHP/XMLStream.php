@@ -198,23 +198,23 @@ class XMPPHP_XMLStream {
    */
   protected $reconnectTimeout = 30;
 
-	/**
-	 * Constructor
-	 *
-	 * @param string  $host
-	 * @param string  $port
-	 * @param boolean $printlog
-	 * @param string  $loglevel
-	 * @param boolean $is_server
-	 */
-	public function __construct($host = null, $port = null, $printlog = false, $loglevel = null, $is_server = false) {
-		$this->reconnect = !$is_server;
-		$this->is_server = $is_server;
-		$this->host = $host;
-		$this->port = $port;
-		$this->setupParser();
-		$this->log = new XMPPHP_Log($printlog, $loglevel);
-	}
+  /**
+   * Constructor
+   *
+   * @param string  $host
+   * @param string  $port
+   * @param boolean $printlog
+   * @param string  $loglevel
+   * @param boolean $is_server
+   */
+  public function __construct($host = null, $port = null, $printlog = false, $loglevel = null, $is_server = false) {
+    $this->reconnect = (!$is_server);
+    $this->is_server = $is_server;
+    $this->host      = $host;
+    $this->port      = $port;
+    $this->setupParser();
+    $this->log       = new XMPPHP_Log($printlog, $loglevel);
+  }
 
 	/**
 	 * Destructor
