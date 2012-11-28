@@ -72,74 +72,96 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
    */
   protected $inactivity;
 
-		public function connect($server=NULL, $wait='1', $session=false) {
-			if (is_null( $server )) {
-				//if we aren't given the server http url, try and guess it
-				$port_string = ( $this->port && $this->port != 80 ) ? ":".$this->port : "";
-				$this->http_server = "http://".$this->host."$port_string/http-bind/";
-			} else {
-				$this->http_server = $server;
-			}
+  /**
+   * Connect
+   *
+   * @param $server
+   * @param $wait
+   * @param $session
+   */
+  public function connect($server = null, $wait = '1', $session = false) {
 
-			$this->use_encryption = false;
-			$this->session = $session;
+    if (is_null($server)) {
 
-			$this->rid = 3001;
-			$this->sid = null;
-			$this->inactivity=0;
-			
-			if($session)
-			{		
-				$this->loadSession();
-			}
+      // If we aren't given the server http url, try and guess it
+      $port_string = ($this->port AND $this->port != 80) ? ':' . $this->port : '';
+      $this->http_server = 'http://' . $this->host . $port_string . '/http-bind/';
+    }
+    else {
+      $this->http_server = $server;
+    }
 
-			if(!$this->sid) {
-				$body = $this->__buildBody();
-				$body->addAttribute('hold','1');
-				$body->addAttribute('to', $this->server);
-				$body->addAttribute('route', "xmpp:{$this->host}:{$this->port}");
-				$body->addAttribute('secure','true');
-				$body->addAttribute('xmpp:version','1.0', 'urn:xmpp:xbosh');
-				$body->addAttribute('wait', strval($wait));
-				$body->addAttribute('ack','1');
-				$body->addAttribute('xmlns:xmpp','urn:xmpp:xbosh');
-				$buff = "<stream:stream xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams'>";
-				xml_parse($this->parser, $buff, false);
-				$response = $this->__sendBody($body);
-				$rxml = new SimpleXMLElement($response);
-				$this->sid = $rxml['sid'];
-				$this->inactivity = $rxml['inactivity'];
-			} else {
-				$buff = "<stream:stream xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams'>";
-				xml_parse($this->parser, $buff, false);
-			}
-		}
+    $this->use_encryption = false;
+    $this->session        = $session;
+    $this->rid            = 3001;
+    $this->sid            = null;
+    $this->inactivity     = 0;
 
-		public function __sendBody($body=null, $recv=true) {
-			if(!$body) {
-				$body = $this->__buildBody();
-			}
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL,$this->http_server);
-			curl_setopt($ch, CURLOPT_HEADER, 0);
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $body->asXML());
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-			$header = array('Accept-Encoding: gzip, deflate','Content-Type: text/xml; charset=utf-8');
-			curl_setopt($ch, CURLOPT_HTTPHEADER, $header );
-			curl_setopt($ch, CURLOPT_VERBOSE, 0);
-			$output = '';
+    if ($session) {
+      $this->loadSession();
+    }
 
-			if($recv) {
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-				$output = curl_exec($ch);
-				if(curl_getinfo($ch,CURLINFO_HTTP_CODE)!="200") throw new XMPPHP_Exception("Wrong response from server!");
-				$this->http_buffer[] = $output;
-			}
+    if (!$this->sid) {
 
-			curl_close($ch);
-			return $output;
-		}
+      $body = $this->__buildBody();
+      $body->addAttribute('hold', '1');
+      $body->addAttribute('to', $this->server);
+      $body->addAttribute('route', 'xmpp:' . $this->host . ':' . $this->port);
+      $body->addAttribute('secure', 'true');
+      $body->addAttribute('xmpp:version', '1.0', 'urn:xmpp:xbosh');
+      $body->addAttribute('wait', strval($wait));
+      $body->addAttribute('ack', '1');
+      $body->addAttribute('xmlns:xmpp', 'urn:xmpp:xbosh');
+      $buff = '<stream:stream xmlns="jabber:client" xmlns:stream="http://etherx.jabber.org/streams">';
+      xml_parse($this->parser, $buff, false);
+      $response = $this->__sendBody($body);
+      $rxml = new SimpleXMLElement($response);
+      $this->sid = $rxml['sid'];
+      $this->inactivity = $rxml['inactivity'];
+    }
+    else {
+      $buff = '<stream:stream xmlns="jabber:client" xmlns:stream="http://etherx.jabber.org/streams">';
+      xml_parse($this->parser, $buff, false);
+    }
+  }
+
+  /**
+   * Send body
+   *
+   * @param $body
+   * @param $recv
+   */
+  public function __sendBody($body = null, $recv = true) {
+
+    if (!$body) {
+      $body = $this->__buildBody();
+    }
+
+    $output = '';
+    $header = array('Accept-Encoding: gzip, deflate', 'Content-Type: text/xml; charset=utf-8');
+    $ch     = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL, $this->http_server);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $body->asXML());
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+    curl_setopt($ch, CURLOPT_VERBOSE, 0);
+
+    if ($recv) {
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      $output = curl_exec($ch);
+      if (curl_getinfo($ch, CURLINFO_HTTP_CODE) != '200') {
+        throw new XMPPHP_Exception('Wrong response from server!');
+      }
+
+      $this->http_buffer[] = $output;
+    }
+    curl_close($ch);
+
+    return $output;
+  }
 
 		public function __buildBody($sub=null) {
 			$xml = new SimpleXMLElement("<body xmlns='http://jabber.org/protocol/httpbind' xmlns:xmpp='urn:xmpp:xbosh' />");
