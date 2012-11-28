@@ -111,27 +111,34 @@ class XMPPHP_XMLObj {
     }
   }
 
-	/**
-	 * Return this XML Object in xml notation
-	 *
-	 * @param string $str
-	 */
-	public function toString($str = '') {
-		$str .= "<{$this->name} xmlns='{$this->ns}' ";
-		foreach($this->attrs as $key => $value) {
-			if($key != 'xmlns') {
-				$value = htmlspecialchars($value);
-				$str .= "$key=\"$value\" ";
-			}
-		}
-		$str .= ">";
-		foreach($this->subs as $sub) {
-			$str .= $sub->toString();
-		}
-		$body = htmlspecialchars($this->data);
-		$str .= "$body</{$this->name}>";
-		return $str;
-	}
+  /**
+   * Return this XML Object in xml notation
+   *
+   * @param string $string
+   */
+  public function toString($string = '') {
+
+    $string .= '<' . $this->name . ' xmlns="' . $this->ns . '" ';
+
+    foreach ($this->attrs as $key => $value) {
+
+      if ($key != 'xmlns') {
+        $value   = htmlspecialchars($value);
+        $string .= $key . '="' . $value . '" ';
+      }
+    }
+
+    $string .= '>';
+
+    foreach ($this->subs as $sub) {
+      $string .= $sub->toString();
+    }
+
+    $body    = htmlspecialchars($this->data);
+    $string .= $body . '</' . $this->name . '>';
+
+    return $string;
+  }
 
 	/**
 	 * Has this XML Object the given sub?
