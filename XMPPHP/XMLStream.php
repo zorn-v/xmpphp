@@ -912,22 +912,32 @@ class XMPPHP_XMLStream {
     }
   }
 
-	/**
-	 * Read from socket
-	 */
-	public function read() {
-		$buff = @fread($this->socket, 1024);
-		if(!$buff) { 
-			if($this->reconnect) {
-				$this->doReconnect();
-			} else {
-				fclose($this->socket);
-				return false;
-			}
-		}
-		$this->log->log("RECV: $buff",  XMPPHP_Log::LEVEL_VERBOSE);
-		xml_parse($this->parser, $buff, false);
-	}
+  /**
+   * Read from socket
+   */
+  public function read() {
+
+    if ($this->socket !== null) {
+      return false;
+    }
+
+    $buff = fread($this->socket, 1024);
+
+    if (!$buff) {
+
+      if ($this->reconnect) {
+        $this->doReconnect();
+      }
+      else {
+        fclose($this->socket);
+
+        return false;
+      }
+    }
+
+    $this->log->log('RECV: ' . $buff,  XMPPHP_Log::LEVEL_VERBOSE);
+    xml_parse($this->parser, $buff, false);
+  }
 
 	/**
 	 * Send to socket
