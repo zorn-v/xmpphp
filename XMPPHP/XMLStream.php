@@ -38,136 +38,165 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Log.php';
 
 /**
  * XMPPHP XML Stream
- * 
- * @category   xmpphp 
- * @package	XMPPHP
- * @author	 Nathanael C. Fritz <JID: fritzy@netflint.net>
- * @author	 Stephan Wentz <JID: stephan@jabber.wentz.it>
- * @author	 Michael Garvin <JID: gar@netflint.net>
- * @copyright  2008 Nathanael C. Fritz
- * @version	$Id$
+ *
+ * @package   XMPPHP
+ * @author    Nathanael C. Fritz <JID: fritzy@netflint.net>
+ * @author    Stephan Wentz <JID: stephan@jabber.wentz.it>
+ * @author    Michael Garvin <JID: gar@netflint.net>
+ * @copyright 2008 Nathanael C. Fritz
+ * @version   $Id$
  */
 class XMPPHP_XMLStream {
-	/**
-	 * @var resource
-	 */
-	protected $socket;
-	/**
-	 * @var resource
-	 */
-	protected $parser;
-	/**
-	 * @var string
-	 */
-	protected $buffer;
-	/**
-	 * @var integer
-	 */
-	protected $xml_depth = 0;
-	/**
-	 * @var string
-	 */
-	protected $host;
-	/**
-	 * @var integer
-	 */
-	protected $port;
-	/**
-	 * @var string
-	 */
-	protected $stream_start = '<stream>';
-	/**
-	 * @var string
-	 */
-	protected $stream_end = '</stream>';
-	/**
-	 * @var boolean
-	 */
-	protected $disconnected = false;
-	/**
-	 * @var boolean
-	 */
-	protected $sent_disconnect = false;
-	/**
-	 * @var array
-	 */
-	protected $ns_map = array();
-	/**
-	 * @var array
-	 */
-	protected $current_ns = array();
-	/**
-	 * @var array
-	 */
-	protected $xmlobj = null;
-	/**
-	 * @var array
-	 */
-	protected $nshandlers = array();
-	/**
-	 * @var array
-	 */
-	protected $xpathhandlers = array();
-	/**
-	 * @var array
-	 */
-	protected $idhandlers = array();
-	/**
-	 * @var array
-	 */
-	protected $eventhandlers = array();
-	/**
-	 * @var integer
-	 */
-	protected $lastid = 0;
-	/**
-	 * @var string
-	 */
-	protected $default_ns;
-	/**
-	 * @var string
-	 */
-	protected $until = '';
-	/**
-	 * @var string
-	 */
-	protected $until_count = '';
-	/**
-	 * @var array
-	 */
-	protected $until_happened = false;
-	/**
-	 * @var array
-	 */
-	protected $until_payload = array();
-	/**
-	 * @var XMPPHP_Log
-	 */
-	protected $log;
-	/**
-	 * @var boolean
-	 */
-	protected $reconnect = true;
-	/**
-	 * @var boolean
-	 */
-	protected $been_reset = false;
-	/**
-	 * @var boolean
-	 */
-	protected $is_server;
-	/**
-	 * @var float
-	 */
-	protected $last_send = 0;
-	/**
-	 * @var boolean
-	 */
-	protected $use_ssl = false;
-	/**
-	 * @var integer
-	 */
-	protected $reconnectTimeout = 30;
+
+  /**
+   * @var resource
+   */
+  protected $socket;
+
+  /**
+   * @var resource
+   */
+  protected $parser;
+
+  /**
+   * @var string
+   */
+  protected $buffer;
+
+  /**
+   * @var integer
+   */
+  protected $xml_depth = 0;
+
+  /**
+   * @var string
+   */
+  protected $host;
+
+  /**
+   * @var integer
+   */
+  protected $port;
+
+  /**
+   * @var string
+   */
+  protected $stream_start = '<stream>';
+
+  /**
+   * @var string
+   */
+  protected $stream_end = '</stream>';
+
+  /**
+   * @var boolean
+   */
+  protected $disconnected = false;
+
+  /**
+   * @var boolean
+   */
+  protected $sent_disconnect = false;
+
+  /**
+   * @var array
+   */
+  protected $ns_map = array();
+
+  /**
+   * @var array
+   */
+  protected $current_ns = array();
+
+  /**
+   * @var array
+   */
+  protected $xmlobj = null;
+
+  /**
+   * @var array
+   */
+  protected $nshandlers = array();
+
+  /**
+   * @var array
+   */
+  protected $xpathhandlers = array();
+
+  /**
+   * @var array
+   */
+  protected $idhandlers = array();
+
+  /**
+   * @var array
+   */
+  protected $eventhandlers = array();
+
+  /**
+   * @var integer
+   */
+  protected $lastid = 0;
+
+  /**
+   * @var string
+   */
+  protected $default_ns;
+
+  /**
+   * @var string
+   */
+  protected $until = '';
+
+  /**
+   * @var string
+   */
+  protected $until_count = '';
+
+  /**
+   * @var array
+   */
+  protected $until_happened = false;
+
+  /**
+   * @var array
+   */
+  protected $until_payload = array();
+
+  /**
+   * @var XMPPHP_Log
+   */
+  protected $log;
+
+  /**
+   * @var boolean
+   */
+  protected $reconnect = true;
+
+  /**
+   * @var boolean
+   */
+  protected $been_reset = false;
+
+  /**
+   * @var boolean
+   */
+  protected $is_server;
+
+  /**
+   * @var float
+   */
+  protected $last_send = 0;
+
+  /**
+   * @var boolean
+   */
+  protected $use_ssl = false;
+
+  /**
+   * @var integer
+   */
+  protected $reconnectTimeout = 30;
 
 	/**
 	 * Constructor
