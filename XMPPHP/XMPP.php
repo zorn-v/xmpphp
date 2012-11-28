@@ -614,16 +614,16 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $this->event('session_start');
   }
 
-	/**
-	 * TLS proceed handler
-	 *
-	 * @param string $xml
-	 */
-	protected function tls_proceed_handler($xml) {
-		$this->log->log("Starting TLS encryption");
-		stream_socket_enable_crypto($this->socket, true, STREAM_CRYPTO_METHOD_SSLv23_CLIENT);
-		$this->reset();
-	}
+  /**
+   * TLS proceed handler
+   *
+   * @param string $xml
+   */
+  protected function tls_proceed_handler($xml) {
+    $this->log->log('Starting TLS encryption');
+    stream_socket_enable_crypto($this->socket, true, STREAM_CRYPTO_METHOD_SSLv23_CLIENT);
+    $this->reset();
+  }
 
 	/**
 	* Retrieves the vcard
