@@ -321,51 +321,62 @@ class XMPPHP_XMLStream {
     $this->eventhandlers[] = array($name, $pointer, $obj);
   }
 
-	/**
-	 * Connect to XMPP Host
-	 *
-	 * @param integer $timeout    Timeout in seconds
-	 * @param boolean $persistent
-	 * @param boolean $sendinit   Send XMPP starting sequence after connect
-	 *                            automatically
-	 *
-	 * @throws XMPPHP_Exception When the connection fails
-	 */
-	public function connect($timeout = 30, $persistent = false, $sendinit = true) {
-		$this->sent_disconnect = false;
-		$starttime = time();
-		
-		do {
-			$this->disconnected = false;
-			$this->sent_disconnect = false;
-			if($persistent) {
-				$conflag = STREAM_CLIENT_CONNECT | STREAM_CLIENT_PERSISTENT;
-			} else {
-				$conflag = STREAM_CLIENT_CONNECT;
-			}
-			$conntype = 'tcp';
-			if($this->use_ssl) $conntype = 'ssl';
-			$this->log->log("Connecting to $conntype://{$this->host}:{$this->port}");
-			try {
-				$this->socket = @stream_socket_client("$conntype://{$this->host}:{$this->port}", $errno, $errstr, $timeout, $conflag);
-			} catch (Exception $e) {
-				throw new XMPPHP_Exception($e->getMessage());
-			}
-			if(!$this->socket) {
-				$this->log->log("Could not connect.",  XMPPHP_Log::LEVEL_ERROR);
-				$this->disconnected = true;
-				# Take it easy for a few seconds
-				sleep(min($timeout, 5));
-			}
-		} while (!$this->socket && (time() - $starttime) < $timeout);
-		
-		if ($this->socket) {
-			stream_set_blocking($this->socket, 1);
-			if($sendinit) $this->send($this->stream_start);
-		} else {
-			throw new XMPPHP_Exception("Could not connect before timeout.");
-		}
-	}
+  /**
+   * Connect to XMPP Host
+   *
+   * @param integer $timeout    Timeout in seconds
+   * @param boolean $persistent
+   * @param boolean $sendinit   Send XMPP starting sequence after connect
+   *                            automatically
+   *
+   * @throws XMPPHP_Exception When the connection fails
+   */
+  public function connect($timeout = 30, $persistent = false, $sendinit = true) {
+
+    $this->sent_disconnect = false;
+    $starttime = time();
+
+    do {
+
+      $this->disconnected    = false;
+      $this->sent_disconnect = false;
+
+      if ($persistent) {
+        $conflag = STREAM_CLIENT_CONNECT | STREAM_CLIENT_PERSISTENT;
+      }
+      else {
+        $conflag = STREAM_CLIENT_CONNECT;
+      }
+
+      $conntype = ($this->use_ssl) ? 'ssl' : 'tcp';
+      $sprintf  = 'Connecting to %s://%s:%s';
+      $this->log->log(sprintf($sprintf, $conntype, $this->host, $this->port));
+
+      try {
+        $connection = sprintf('%s://%s:%s', $conntype, $this->host, $this->port);
+        $this->socket = stream_socket_client($connection, $errno, $errstr, $timeout, $conflag);
+      } catch (Exception $e) {
+        throw new XMPPHP_Exception($e->getMessage());
+      }
+
+      if (!$this->socket) {
+        $this->log->log('Could not connect.',  XMPPHP_Log::LEVEL_ERROR);
+        $this->disconnected = true;
+        // Take it easy for a few seconds
+        sleep(min($timeout, 5));
+      }
+    } while (!$this->socket AND ((time() - $starttime) < $timeout));
+
+    if ($this->socket) {
+      stream_set_blocking($this->socket, 1);
+      if ($sendinit) {
+        $this->send($this->stream_start);
+      }
+    }
+    else {
+      throw new XMPPHP_Exception('Could not connect before timeout.');
+    }
+  }
 
 	/**
 	 * Reconnect XMPP Host
