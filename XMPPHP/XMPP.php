@@ -451,18 +451,17 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $this->authed = true;
     $this->reset();
   }
-	
-	/**
-	 * SASL feature handler
-	 *
-	 * @param string $xml
-	 */
-	protected function sasl_failure_handler($xml) {
-		$this->log->log("Auth failed!",  XMPPHP_Log::LEVEL_ERROR);
-		$this->disconnect();
-		
-		throw new XMPPHP_Exception('Auth failed!');
-	}
+
+  /**
+   * SASL feature handler
+   *
+   * @param string $xml
+   */
+  protected function sasl_failure_handler($xml) {
+    $this->log->log('Auth failed!',  XMPPHP_Log::LEVEL_ERROR);
+    $this->disconnect();
+    throw new XMPPHP_Exception('Auth failed!');
+  }
 
 	/**
 	 * Handle challenges for DIGEST-MD5 auth
