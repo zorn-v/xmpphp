@@ -90,80 +90,98 @@ class XMPPHP_Roster {
     }
   }
 
-	/**
-	 * 
-	 * Retrieve contact via jid
-	 *
-	 * @param string $jid
-	 */
-	public function getContact($jid) {
-		if ($this->isContact($jid)) {
-			return $this->roster_array[$jid]['contact'];
-		}
-	}
+  /**
+   * Retrieve contact via jid
+   *
+   * @param string $jid
+   */
+  public function getContact($jid) {
+    if ($this->isContact($jid)) {
+      return $this->roster_array[$jid]['contact'];
+    }
+  }
 
-	/**
-	 *
-	 * Discover if a contact exists in the roster via jid
-	 *
-	 * @param string $jid
-	 */
-	public function isContact($jid) {
-		return (array_key_exists($jid, $this->roster_array));
-	}
+  /**
+   * Discover if a contact exists in the roster via jid
+   *
+   * @param string $jid
+   */
+  public function isContact($jid) {
+    return (array_key_exists($jid, $this->roster_array));
+  }
 
-	/**
-	 *
-	 * Set presence
-	 *
-	 * @param string $presence
-	 * @param integer $priority
-	 * @param string $show
-	 * @param string $status
-	*/
-	public function setPresence($presence, $priority, $show, $status) {
-		$presence = explode('/', $presence, 2);
-		$jid = $presence[0];
-		$resource = isset($presence[1]) ? $presence[1] : '';
-		if ($show != 'unavailable') {
-			if (!$this->isContact($jid)) {
-				$this->addContact($jid, 'not-in-roster');
-			}
-			$this->roster_array[$jid]['presence'][$resource] = array('priority' => $priority, 'show' => $show, 'status' => $status);
-		} else { //Nuke unavailable resources to save memory
-			unset($this->roster_array[$jid]['resource'][$resource]);
-			unset($this->roster_array[$jid]['presence'][$resource]);
-		}
-	}
+  /**
+   * Set presence
+   *
+   * @param string $presence
+   * @param integer $priority
+   * @param string $show
+   * @param string $status
+  */
+  public function setPresence($presence, $priority, $show, $status) {
 
-	/*
-	 *
-	 * Return best presence for jid
-	 *
-	 * @param string $jid
-	 */
-	public function getPresence($jid) {
-		$split = explode('/', $jid, 2);
-		$jid = $split[0];
-		if($this->isContact($jid)) {
-			$current = array('resource' => '', 'active' => '', 'priority' => -129, 'show' => '', 'status' => ''); //Priorities can only be -128 = 127
-			foreach($this->roster_array[$jid]['presence'] as $resource => $presence) {
-				//Highest available priority or just highest priority
-				if ($presence['priority'] > $current['priority'] and (($presence['show'] == "chat" or $presence['show'] == "available") or ($current['show'] != "chat" or $current['show'] != "available"))) {
-					$current = $presence;
-					$current['resource'] = $resource;
-				}
-			}
-			return $current;
-		}
-	}
-	/**
-	 *
-	 * Get roster
-	 *
-	 */
-	public function getRoster() {
-		return $this->roster_array;
-	}
+    $presence = explode('/', $presence, 2);
+    $jid      = $presence[0];
+    $resource = isset($presence[1]) ? $presence[1] : '';
+
+    if ($show != 'unavailable') {
+
+      if (!$this->isContact($jid)) {
+        $this->addContact($jid, 'not-in-roster');
+      }
+
+      $array = array(
+        'priority' => $priority,
+        'show'     => $show,
+        'status'   => $status,
+      );
+
+      $this->roster_array[$jid]['presence'][$resource] = $array;
+    }
+    else {
+      // Nuke unavailable resources to save memory
+      unset($this->roster_array[$jid]['resource'][$resource]);
+      unset($this->roster_array[$jid]['presence'][$resource]);
+    }
+  }
+
+  /**
+   * Return best presence for jid
+   *
+   * @param string $jid
+   */
+  public function getPresence($jid) {
+
+    $jid = array_shift(explode('/', $jid, 2));
+
+    if ($this->isContact($jid)) {
+
+      // Priorities can only be -128 = 127
+      $current = array(
+        'resource' => '',
+        'active' => '',
+        'priority' => -129,
+        'show' => '',
+        'status' => '',
+      );
+
+      foreach ($this->roster_array[$jid]['presence'] as $resource => $presence) {
+
+        // Highest available priority or just highest priority
+        if ($presence['priority'] > $current['priority'] AND (($presence['show'] == 'chat' OR $presence['show'] == 'available') OR ($current['show'] != 'chat' OR $current['show'] != 'available'))) {
+          $current             = $presence;
+          $current['resource'] = $resource;
+        }
+      }
+
+      return $current;
+    }
+  }
+  /**
+   * Get roster
+   *
+   */
+  public function getRoster() {
+    return $this->roster_array;
+  }
 }
-?>
