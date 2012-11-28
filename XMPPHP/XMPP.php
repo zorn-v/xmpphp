@@ -290,24 +290,23 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     return $this->send($xml);
   }
 
-	/**
-	 * Message handler
-	 *
-	 * @param string $xml
-	 */
-	public function message_handler($xml) {
-		if(isset($xml->attrs['type'])) {
-			$payload['type'] = $xml->attrs['type'];
-		} else {
-			$payload['type'] = 'chat';
-		}
-		$body = $xml->sub('body');
-		$payload['from'] = $xml->attrs['from'];
-		$payload['body'] = is_object($body) ? $body->data : FALSE; // $xml->sub('body')->data;
-		$payload['xml'] = $xml;
-		$this->log->log("Message: {$payload['body']}", XMPPHP_Log::LEVEL_DEBUG);
-		$this->event('message', $payload);
-	}
+  /**
+   * Message handler
+   *
+   * @param string $xml
+   */
+  public function message_handler($xml) {
+
+    $payload = array();
+
+    $body            = $xml->sub('body');
+    $payload['xml']  = $xml;
+    $payload['type'] = (isset($xml->attrs['type'])) ? $xml->attrs['type'] : 'chat';
+    $payload['from'] = $xml->attrs['from'];
+    $payload['body'] = is_object($body) ? $body->data : false;
+    $this->log->log('Message: ' . $payload['body'], XMPPHP_Log::LEVEL_DEBUG);
+    $this->event('message', $payload);
+  }
 
 	/**
 	 * Presence handler
