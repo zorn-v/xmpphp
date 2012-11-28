@@ -45,46 +45,50 @@ class XMPPHP_Roster {
    * @var array
    */
   protected $roster_array = array();
-	/**
-	 * Constructor
-	 * 
-	 */
-	public function __construct($roster_array = array()) {
-		if ($this->verifyRoster($roster_array)) {
-			$this->roster_array = $roster_array; //Allow for prepopulation with existing roster
-		} else {
-			$this->roster_array = array();
-		}
-	}
 
-	/**
-	 *
-	 * Check that a given roster array is of a valid structure (empty is still valid)
-	 *
-	 * @param array $roster_array
-	 */
-	protected function verifyRoster($roster_array) {
-		#TODO once we know *what* a valid roster array looks like
-		return True;
-	}
+  /**
+   * Constructor
+   *
+   */
+  public function __construct($roster_array = array()) {
+    // Allow for prepopulation with existing roster
+    $this->roster_array = ($this->verifyRoster($roster_array)) ? $roster_array : array();
+  }
 
-	/**
-	 *
-	 * Add given contact to roster
-	 *
-	 * @param string $jid
-	 * @param string $subscription
-	 * @param string $name
-	 * @param array $groups
-	 */
-	public function addContact($jid, $subscription, $name='', $groups=array()) {
-		$contact = array('jid' => $jid, 'subscription' => $subscription, 'name' => $name, 'groups' => $groups);
-		if ($this->isContact($jid)) {
-			$this->roster_array[$jid]['contact'] = $contact;
-		} else {
-			$this->roster_array[$jid] = array('contact' => $contact);
-		}
-	}
+  /**
+   * Check that a given roster array is of a valid structure (empty is still valid)
+   *
+   * @param array $roster_array
+   */
+  protected function verifyRoster($roster_array) {
+    // TODO once we know *what* a valid roster array looks like
+    return true;
+  }
+
+  /**
+   * Add given contact to roster
+   *
+   * @param string $jid
+   * @param string $subscription
+   * @param string $name
+   * @param array  $groups
+   */
+  public function addContact($jid, $subscription, $name = '', $groups = array()) {
+
+    $contact = array(
+      'jid'          => $jid,
+      'subscription' => $subscription,
+      'name'         => $name,
+      'groups'       => $groups,
+    );
+
+    if ($this->isContact($jid)) {
+      $this->roster_array[$jid]['contact'] = $contact;
+    }
+    else {
+      $this->roster_array[$jid] = array('contact' => $contact);
+    }
+  }
 
 	/**
 	 * 
