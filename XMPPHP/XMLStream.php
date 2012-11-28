@@ -414,14 +414,14 @@ class XMPPHP_XMLStream {
     $this->disconnected    = true;
   }
 
-	/**
-	 * Are we are disconnected?
-	 *
-	 * @return boolean
-	 */
-	public function isDisconnected() {
-		return $this->disconnected;
-	}
+  /**
+   * Are we are disconnected?
+   *
+   * @return boolean
+   */
+  public function isDisconnected() {
+    return $this->disconnected;
+  }
 
 	/**
 	 * Checks if the given string is closed with the same tag as it is
