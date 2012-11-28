@@ -310,16 +310,16 @@ class XMPPHP_XMLStream {
     $this->xpathhandlers[] = array($xpath_array, $pointer, $obj);
   }
 
-	/**
-	 * Add Event Handler
-	 *
-	 * @param integer $id
-	 * @param string  $pointer
-	 * @param string  $obj
-	 */
-	public function addEventHandler($name, $pointer, $obj) {
-		$this->eventhandlers[] = array($name, $pointer, $obj);
-	}
+  /**
+   * Add Event Handler
+   *
+   * @param integer $id
+   * @param string  $pointer
+   * @param string  $obj
+   */
+  public function addEventHandler($name, $pointer, $obj) {
+    $this->eventhandlers[] = array($name, $pointer, $obj);
+  }
 
 	/**
 	 * Connect to XMPP Host
