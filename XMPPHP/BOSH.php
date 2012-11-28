@@ -238,14 +238,19 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
     }
   }
 
-		//null params are not used and just to statify Strict Function Declaration
-		public function send($msg,$null1=NULL) {
-			$this->log->log("SEND: $msg",  XMPPHP_Log::LEVEL_VERBOSE);
-			$msg = new SimpleXMLElement($msg);
-			#$msg->addAttribute('xmlns', 'jabber:client');
-			$this->__sendBody($this->__buildBody($msg), true);
-			#$this->__parseBuffer();
-		}
+  /**
+   * Process
+   *
+   * @param $msg
+   * @param $null
+   *
+   * null param are not used and just to statify Strict Function Declaration
+   */
+  public function send($msg, $null = null) {
+    $this->log->log('SEND: ' . $msg,  XMPPHP_Log::LEVEL_VERBOSE);
+    $msg = new SimpleXMLElement($msg);
+    $this->__sendBody($this->__buildBody($msg), true);
+  }
 
 		public function reset() {
 			$this->xml_depth = 0;
