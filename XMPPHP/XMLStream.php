@@ -939,53 +939,62 @@ class XMPPHP_XMLStream {
     xml_parse($this->parser, $buff, false);
   }
 
-	/**
-	 * Send to socket
-	 *
-	 * @param string $msg
-	 */
-	public function send($msg, $timeout=NULL) {
+  /**
+   * Send to socket
+   *
+   * @param string $msg
+   */
+  public function send($msg, $timeout=null) {
 
-		if (is_null($timeout)) {
-			$secs = NULL;
-			$usecs = NULL;
-		} else if ($timeout == 0) {
-			$secs = 0;
-			$usecs = 0;
-		} else {
-			$maximum = $timeout * 1000000;
-			$usecs = $maximum % 1000000;
-			$secs = floor(($maximum - $usecs) / 1000000);
-		}
-		
-		$read = array();
-		$write = array($this->socket);
-		$except = array();
-		
-		$select = @stream_select($read, $write, $except, $secs, $usecs);
-		
-		if($select === False) {
-			$this->log->log("ERROR sending message; reconnecting.");
-			$this->doReconnect();
-			# TODO: retry send here
-			return false;
-		} elseif ($select > 0) {
-			$this->log->log("Socket is ready; send it.", XMPPHP_Log::LEVEL_VERBOSE);
-		} else {
-			$this->log->log("Socket is not ready; break.", XMPPHP_Log::LEVEL_ERROR);
-			return false;
-		}
-		
-		$sentbytes = @fwrite($this->socket, $msg);
-		$this->log->log("SENT: " . mb_substr($msg, 0, $sentbytes, '8bit'), XMPPHP_Log::LEVEL_VERBOSE);
-		if($sentbytes === FALSE) {
-			$this->log->log("ERROR sending message; reconnecting.", XMPPHP_Log::LEVEL_ERROR);
-			$this->doReconnect();
-			return false;
-		}
-		$this->log->log("Successfully sent $sentbytes bytes.", XMPPHP_Log::LEVEL_VERBOSE);
-		return $sentbytes;
-	}
+    if (is_null($timeout)) {
+      $secs  = null;
+      $usecs = null;
+    }
+    elseif ($timeout == 0) {
+      $secs  = 0;
+      $usecs = 0;
+    }
+    else {
+      $maximum = $timeout * 1000000;
+      $usecs   = $maximum % 1000000;
+      $secs    = floor(($maximum - $usecs) / 1000000);
+    }
+
+    $read   = array();
+    $write  = array($this->socket);
+    $except = array();
+    $select = stream_select($read, $write, $except, $secs, $usecs);
+
+    if ($select === false) {
+
+      $this->log->log('ERROR sending message; reconnecting.');
+      $this->doReconnect();
+      // TODO: retry send here
+
+      return false;
+    }
+    elseif ($select > 0) {
+      $this->log->log('Socket is ready; send it.', XMPPHP_Log::LEVEL_VERBOSE);
+    }
+    else {
+      $this->log->log('Socket is not ready; break.', XMPPHP_Log::LEVEL_ERROR);
+
+      return false;
+    }
+
+    $sentbytes = fwrite($this->socket, $msg);
+    $this->log->log('SENT: ' . mb_substr($msg, 0, $sentbytes, '8bit'), XMPPHP_Log::LEVEL_VERBOSE);
+
+    if ($sentbytes === false) {
+      $this->log->log('ERROR sending message; reconnecting.', XMPPHP_Log::LEVEL_ERROR);
+      $this->doReconnect();
+
+      return false;
+    }
+    $this->log->log('Successfully sent ' . $sentbytes . ' bytes', XMPPHP_Log::LEVEL_VERBOSE);
+
+    return $sentbytes;
+  }
 
 	public function time() {
 		list($usec, $sec) = explode(" ", microtime());
