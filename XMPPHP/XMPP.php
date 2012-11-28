@@ -441,16 +441,16 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     }
   }
 
-	/**
-	 * SASL success handler
-	 *
-	 * @param string $xml
-	 */
-	protected function sasl_success_handler($xml) {
-		$this->log->log("Auth success!");
-		$this->authed = true;
-		$this->reset();
-	}
+  /**
+   * SASL success handler
+   *
+   * @param string $xml
+   */
+  protected function sasl_success_handler($xml) {
+    $this->log->log('Auth success!');
+    $this->authed = true;
+    $this->reset();
+  }
 	
 	/**
 	 * SASL feature handler
