@@ -42,12 +42,35 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'XMPP.php';
  */
 class XMPPHP_BOSH extends XMPPHP_XMPP {
 
-		protected $rid;
-		protected $sid;
-		protected $http_server;
-		protected $http_buffer = Array();
-		protected $session = false;
-		protected $inactivity;
+  /**
+   * @var integer
+   */
+  protected $rid;
+
+  /**
+   * @var string
+   */
+  protected $sid;
+
+  /**
+   * @var string
+   */
+  protected $http_server;
+
+  /**
+   * @var array
+   */
+  protected $http_buffer = array();
+
+  /**
+   * @var string
+   */
+  protected $session = false;
+
+  /**
+   * @var integer
+   */
+  protected $inactivity;
 
 		public function connect($server=NULL, $wait='1', $session=false) {
 			if (is_null( $server )) {
