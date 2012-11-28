@@ -622,52 +622,49 @@ class XMPPHP_XMLStream {
     }
   }
 
-	/**
-	 * Process until a specified event or a timeout occurs
-	 *
-	 * @param string|array $event   Event name or array of event names
-	 * @param integer      $timeout Timeout in seconds
-	 *
-	 * @return array Payload
-	 */
-	public function processUntil($event, $timeout = -1)
-	{
-		$start = time();
-		if (!is_array($event)) {
-			$event = array($event);
-		}
+  /**
+   * Process until a specified event or a timeout occurs
+   *
+   * @param string|array $event   Event name or array of event names
+   * @param integer      $timeout Timeout in seconds
+   *
+   * @return array Payload
+   */
+  public function processUntil($event, $timeout = -1) {
 
-		$this->until[] = $event;
-		end($this->until);
-		$event_key = key($this->until);
-		reset($this->until);
+    $start = time();
 
-		$this->until_count[$event_key] = 0;
-		$updated = '';
-		while (!$this->disconnected
-			&& $this->until_count[$event_key] < 1
-			&& ($timeout == -1 || time() - $start < $timeout)
-		) {
-			$maximum = $timeout == -1
-				? NULL
-				: ($timeout - (time() - $start)) * 1000000;
-			$ret = $this->__process($maximum, true);
-			if (!$ret) {
-				break;
-			}
-		}
+    if (!is_array($event)) {
+      $event = array($event);
+    }
 
-		if (array_key_exists($event_key, $this->until_payload)) {
-			$payload = $this->until_payload[$event_key];
-			unset($this->until_payload[$event_key]);
-			unset($this->until_count[$event_key]);
-			unset($this->until[$event_key]);
-		} else {
-			$payload = array();
-		}
+    $this->until[] = $event;
+    end($this->until);
+    $event_key     = key($this->until);
+    reset($this->until);
 
-		return $payload;
-	}
+    $this->until_count[$event_key] = 0;
+
+    while (!$this->disconnected AND $this->until_count[$event_key] < 1 AND ($timeout == -1 OR (time() - $start) < $timeout)) {
+      $maximum = ($timeout == -1) ? null : ($timeout - (time() - $start)) * 1000000;
+      $ret     = $this->__process($maximum, true);
+      if (!$ret) {
+        break;
+      }
+    }
+
+    if (array_key_exists($event_key, $this->until_payload)) {
+      $payload = $this->until_payload[$event_key];
+      unset($this->until_payload[$event_key]);
+      unset($this->until_count[$event_key]);
+      unset($this->until[$event_key]);
+    }
+    else {
+      $payload = array();
+    }
+
+    return $payload;
+  }
 
 	/**
 	 * Obsolete?
