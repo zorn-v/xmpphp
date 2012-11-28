@@ -996,42 +996,47 @@ class XMPPHP_XMLStream {
     return $sentbytes;
   }
 
-	public function time() {
-		list($usec, $sec) = explode(" ", microtime());
-		return (float)$sec + (float)$usec;
-	}
+  public function time() {
+    list($usec, $sec) = explode(' ', microtime());
+    return (float) $sec + (float) $usec;
+  }
 
-	/**
-	 * Reset connection
-	 */
-	public function reset() {
-		$this->xml_depth = 0;
-		unset($this->xmlobj);
-		$this->xmlobj = array();
-		$this->setupParser();
-		if(!$this->is_server) {
-			$this->send($this->stream_start);
-		}
-		$this->been_reset = true;
-	}
+  /**
+   * Reset connection
+   */
+  public function reset() {
 
-	/**
-	 * Setup the XML parser
-	 */
-	public function setupParser() {
-		$this->parser = xml_parser_create('UTF-8');
-		xml_parser_set_option($this->parser, XML_OPTION_SKIP_WHITE, 1);
-		xml_parser_set_option($this->parser, XML_OPTION_TARGET_ENCODING, 'UTF-8');
-		xml_set_object($this->parser, $this);
-		xml_set_element_handler($this->parser, 'startXML', 'endXML');
-		xml_set_character_data_handler($this->parser, 'charXML');
-	}
+    $this->xml_depth = 0;
+    unset($this->xmlobj);
+    $this->xmlobj = array();
+    $this->setupParser();
 
-	public function readyToProcess() {
-		$read = array($this->socket);
-		$write = array();
-		$except = array();
-		$updated = @stream_select($read, $write, $except, 0);
-		return (($updated !== false) && ($updated > 0));
-	}
+    if (!$this->is_server) {
+      $this->send($this->stream_start);
+    }
+
+    $this->been_reset = true;
+  }
+
+  /**
+   * Setup the XML parser
+   */
+  public function setupParser() {
+
+    $this->parser = xml_parser_create('UTF-8');
+    xml_parser_set_option($this->parser, XML_OPTION_SKIP_WHITE, 1);
+    xml_parser_set_option($this->parser, XML_OPTION_TARGET_ENCODING, 'UTF-8');
+    xml_set_object($this->parser, $this);
+    xml_set_element_handler($this->parser, 'startXML', 'endXML');
+    xml_set_character_data_handler($this->parser, 'charXML');
+  }
+
+  public function readyToProcess() {
+    $read    = array($this->socket);
+    $write   = array();
+    $except  = array();
+    $updated = stream_select($read, $write, $except, 0);
+
+    return (($updated !== false) AND ($updated > 0));
+  }
 }
