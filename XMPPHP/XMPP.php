@@ -205,35 +205,37 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $this->send($output);
   }
 
-	/**
-	 * Set Presence
-	 *
-	 * @param string $status
-	 * @param string $show
-	 * @param string $to
-	 */
-	public function presence($status = null, $show = 'available', $to = null, $type='available', $priority=null, $payload=null) {
-		if($type == 'available') $type = '';
-		$to	 = htmlspecialchars($to);
-		$status = htmlspecialchars($status);
-		if($show == 'unavailable') $type = 'unavailable';
-		
-		$out = "<presence";
-		if($to) $out .= " to=\"$to\"";
-		if($type) $out .= " type='$type'";
-		if($show == 'available' and $status == null and $priority == null and $payload == null) {
-			$out .= "/>";
-		} else {
-			$out .= ">";
-			if($show != 'available' && $show != null) $out .= "<show>$show</show>";
-			if($status != null) $out .= "<status>$status</status>";
-			if($priority !== null) $out .= "<priority>$priority</priority>";
-			if($payload !== null) $out .= $payload;
-			$out .= "</presence>";
-		}
-		
-		$this->send($out);
-	}
+  /**
+   * Set Presence
+   *
+   * @param string $status
+   * @param string $show
+   * @param string $to
+   */
+  public function presence($status = null, $show = 'available', $to = null, $type = 'available', $priority = null, $payload = null) {
+
+    $to       = htmlspecialchars($to);
+    $status   = htmlspecialchars($status);
+    $type     = ($type != 'available') ? $type : '';
+    $type     = ($show != 'unavailable') ? $type : $show;
+    $show     = ($show != 'available' && $show != null) ? '<show>' . $show . '</show>' : '';
+    $status   = ($status != null) ? '<status>' . $status . '</status>' : '';
+    $priority = ($priority !== null) ? '<priority>' . $priority . '</priority>' : '';
+    $payload  = ($payload) ? $payload : '';
+    $to       = ($to) ? 'to="' . $to . '"' : '';
+    $type     = ($type) ? 'type="' . $type . '"' : '';
+
+    if ($show == 'available' AND $status == null AND $priority == null AND $payload == null) {
+      $sprintf = '<presence %s %s />';
+      $output  = sprintf($sprintf, $to, $type);
+    }
+    else {
+      $sprintf = '<presence %s %s>%s%s%s%s</presence>';
+      $output  = sprintf($sprintf, $to, $type, $show, $status, $priority, $payload);
+    }
+
+    $this->send($output);
+  }
 	/**
 	 * Send Auth request
 	 *
