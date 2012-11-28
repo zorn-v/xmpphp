@@ -171,14 +171,14 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $this->use_encryption = $useEncryption;
   }
 
-	/**
-	 * Turn on auto-authorization of subscription requests.
-	 *
-	 * @param boolean $autoSubscribe
-	 */
-	public function autoSubscribe($autoSubscribe = true) {
-		$this->auto_subscribe = $autoSubscribe;
-	}
+  /**
+   * Turn on auto-authorization of subscription requests.
+   *
+   * @param boolean $autoSubscribe
+   */
+  public function autoSubscribe($autoSubscribe = true) {
+    $this->auto_subscribe = $autoSubscribe;
+  }
 
 	/**
 	 * Send XMPP Message
