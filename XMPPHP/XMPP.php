@@ -542,15 +542,15 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $this->send('<iq xmlns="jabber:client" type="set" id="' . $id . '">' . $session . '</iq>');
   }
 
-	/**
-	* Retrieves the roster
-	*
-	*/
-	public function getRoster() {
-		$id = $this->getID();
-		$this->addIdHandler($id, 'roster_iq_handler');
-		$this->send("<iq xmlns='jabber:client' type='get' id='$id'><query xmlns='jabber:iq:roster' /></iq>");
-	}
+  /**
+   * Retrieves the roster
+   *
+   */
+  public function getRoster() {
+    $id = $this->getID();
+    $this->addIdHandler($id, 'roster_iq_handler');
+    $this->send('<iq xmlns="jabber:client" type="get" id="' . $id . '"><query xmlns="jabber:iq:roster" /></iq>');
+  }
 
 	/**
 	* Roster iq handler
