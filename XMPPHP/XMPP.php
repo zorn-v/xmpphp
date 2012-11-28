@@ -638,28 +638,32 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $this->send(sprintf($sprintf, $id, $jid));
   }
 
-	/**
-	* VCard retrieval handler
-	*
-	* @param XML Object $xml
-	*/
-	protected function vcard_get_handler($xml) {
-		$vcard_array = array();
-		$vcard = $xml->sub('vcard');
-		// go through all of the sub elements and add them to the vcard array
-		foreach ($vcard->subs as $sub) {
-			if ($sub->subs) {
-				$vcard_array[$sub->name] = array();
-				foreach ($sub->subs as $sub_child) {
-					$vcard_array[$sub->name][$sub_child->name] = $sub_child->data;
-				}
-			} else {
-				$vcard_array[$sub->name] = $sub->data;
-			}
-		}
-		$vcard_array['from'] = $xml->attrs['from'];
-		$this->event('vcard', $vcard_array);
-	}
+  /**
+   * VCard retrieval handler
+   *
+   * @param XML Object $xml
+   */
+  protected function vcard_get_handler($xml) {
+
+    $vcard_array = array();
+    $vcard       = $xml->sub('vcard');
+
+    // Go through all of the sub elements and add them to the vcard array
+    foreach ($vcard->subs as $sub) {
+
+      if ($sub->subs) {
+        $vcard_array[$sub->name] = array();
+        foreach ($sub->subs as $sub_child) {
+          $vcard_array[$sub->name][$sub_child->name] = $sub_child->data;
+        }
+      }
+      else {
+        $vcard_array[$sub->name] = $sub->data;
+      }
+    }
+    $vcard_array['from'] = $xml->attrs['from'];
+    $this->event('vcard', $vcard_array);
+  }
 	
 	/*
 	* create xml for x tag
