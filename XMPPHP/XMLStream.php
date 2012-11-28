@@ -225,59 +225,59 @@ class XMPPHP_XMLStream {
       $this->disconnect();
     }
   }
-	
-	/**
-	 * Return the log instance
-	 *
-	 * @return XMPPHP_Log
-	 */
-	public function getLog() {
-		return $this->log;
-	}
-	
-	/**
-	 * Get next ID
-	 *
-	 * @return integer
-	 */
-	public function getId() {
-		$this->lastid++;
-		return $this->lastid;
-	}
 
-	/**
-	 * Set SSL
-	 *
-	 * @return integer
-	 */
-	public function useSSL($use=true) {
-		$this->use_ssl = $use;
-	}
+  /**
+   * Return the log instance
+   *
+   * @return XMPPHP_Log
+   */
+  public function getLog() {
+    return $this->log;
+  }
 
-	/**
-	 * Add ID Handler
-	 *
-	 * @param integer $id
-	 * @param string  $pointer
-	 * @param string  $obj
-	 */
-	public function addIdHandler($id, $pointer, $obj = null) {
-		$this->idhandlers[$id] = array($pointer, $obj);
-	}
+  /**
+   * Get next ID
+   *
+   * @return integer
+   */
+  public function getId() {
+    $this->lastid++;
+    return $this->lastid;
+  }
 
-	/**
-	 * Add Handler
-	 *
-	 * @param string $name
-	 * @param string  $ns
-	 * @param string  $pointer
-	 * @param string  $obj
-	 * @param integer $depth
-	 */
-	public function addHandler($name, $ns, $pointer, $obj = null, $depth = 1) {
-		#TODO deprication warning
-		$this->nshandlers[] = array($name,$ns,$pointer,$obj, $depth);
-	}
+  /**
+   * Set SSL
+   *
+   * @return integer
+   */
+  public function useSSL($use = true) {
+    $this->use_ssl = $use;
+  }
+
+  /**
+   * Add ID Handler
+   *
+   * @param integer $id
+   * @param string  $pointer
+   * @param string  $obj
+   */
+  public function addIdHandler($id, $pointer, $obj = null) {
+    $this->idhandlers[$id] = array($pointer, $obj);
+  }
+
+  /**
+   * Add Handler
+   *
+   * @param string  $name
+   * @param string  $ns
+   * @param string  $pointer
+   * @param string  $obj
+   * @param integer $depth
+   */
+  public function addHandler($name, $ns, $pointer, $obj = null, $depth = 1) {
+    // TODO deprication warning
+    $this->nshandlers[] = array($name, $ns, $pointer, $obj, $depth);
+  }
 
 	/**
 	 * Add XPath Handler
