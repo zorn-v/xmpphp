@@ -37,14 +37,14 @@
  * @copyright 2008 Nathanael C. Fritz
  * @version   $Id$
  */
+class XMPPHP_Roster {
 
-class Roster {
-	/**
-	 * Roster array, handles contacts and presence.  Indexed by jid.
-	 * Contains array with potentially two indexes 'contact' and 'presence'
-	 * @var array
-	 */
-	protected $roster_array = array();
+  /**
+   * Roster array, handles contacts and presence.  Indexed by jid.
+   * Contains array with potentially two indexes 'contact' and 'presence'
+   * @var array
+   */
+  protected $roster_array = array();
 	/**
 	 * Constructor
 	 * 
