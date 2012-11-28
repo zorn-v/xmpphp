@@ -481,7 +481,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     foreach ($matches[1] as $k => $v) {
       $vars[$v] = (empty($matches[2][$k])) ? $matches[3][$k] : $matches[2][$k];
     }
-    $this->log->log('ARROZ CON ABICHUELAS: ' . str_repeat('-', 120));
+
     if (isset($vars['nonce'])) {
 
       // First step
