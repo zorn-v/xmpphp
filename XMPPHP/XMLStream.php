@@ -394,24 +394,25 @@ class XMPPHP_XMLStream {
     }
   }
 
-	public function setReconnectTimeout($timeout) {
-		$this->reconnectTimeout = $timeout;
-	}
-	
-	/**
-	 * Disconnect from XMPP Host
-	 */
-	public function disconnect() {
-		$this->log->log("Disconnecting...",  XMPPHP_Log::LEVEL_VERBOSE);
-		if(false == (bool) $this->socket) {
-			return;
-		}
-		$this->reconnect = false;
-		$this->send($this->stream_end);
-		$this->sent_disconnect = true;
-		$this->processUntil('end_stream', 5);
-		$this->disconnected = true;
-	}
+  public function setReconnectTimeout($timeout) {
+    $this->reconnectTimeout = $timeout;
+  }
+
+  /**
+   * Disconnect from XMPP Host
+   */
+  public function disconnect() {
+
+    $this->log->log('Disconnecting...',  XMPPHP_Log::LEVEL_VERBOSE);
+    if ((bool) $this->socket == false) {
+      return;
+    }
+    $this->reconnect       = false;
+    $this->send($this->stream_end);
+    $this->sent_disconnect = true;
+    $this->processUntil('end_stream', 5);
+    $this->disconnected    = true;
+  }
 
 	/**
 	 * Are we are disconnected?
