@@ -308,61 +308,74 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $this->event('message', $payload);
   }
 
-	/**
-	 * Presence handler
-	 *
-	 * @param string $xml
-	 */
-	public function presence_handler($xml) {
-		$payload['from'] = $xml->attrs['from'];	
-				
-		if($xml->hasSub('x')){
-			$x = $xml->sub('x');
-			if($x->hasSub('status'))
-				switch($x->sub('status')->attrs['code']){
-					case '201': 
-						$id = $this->getId();
-						$this->addIdHandler($id, 'room_join_handler');
-						$this->sendIq($payload['from'], 'set', 'http://jabber.org/protocol/muc#owner', $this->x(array('xmlns'=>'jabber:x:data', 'type'=>'submit')),null,$id);
-						$this->log->log("Presence#muc: sending default config for created room...",  XMPPHP_Log::LEVEL_DEBUG);						
-					break;
-					case '110':
-						$payload['affiliation'] = $x->sub('item')->attrs['affiliation'];
-						$payload['role'] = $x->sub('item')->attrs['role'];
-						$this->event('room_joined');
-					break;
-				}
-						
-		}
-		
-		if($xml->hasSub('error')){
-			$error = $xml->sub('error');
-			//TODO	$error->attrs['type']; different types of error may need different management
-			$this->event('presence_error', $payload);
-		}
-		
-		$payload['type'] = (isset($xml->attrs['type'])) ? $xml->attrs['type'] : 'available';
-		$payload['show'] = (isset($xml->sub('show')->data)) ? $xml->sub('show')->data : $payload['type'];
+  /**
+   * Presence handler
+   *
+   * @param string $xml
+   */
+  public function presence_handler($xml) {
 
-		$payload['status'] = (isset($xml->sub('status')->data)) ? $xml->sub('status')->data : '';
-		$payload['priority'] = (isset($xml->sub('priority')->data)) ? intval($xml->sub('priority')->data) : 0;
-		$payload['xml'] = $xml;
-		if($this->track_presence) {
-			$this->roster->setPresence($payload['from'], $payload['priority'], $payload['show'], $payload['status']);
-		}
-		$this->log->log("Presence: {$payload['from']} [{$payload['show']}] {$payload['status']}",  XMPPHP_Log::LEVEL_DEBUG);
-		if(array_key_exists('type', $xml->attrs) and $xml->attrs['type'] == 'subscribe') {
-			if($this->auto_subscribe) {
-				$this->send("<presence type='subscribed' to='{$xml->attrs['from']}' from='{$this->fulljid}' />");
-				$this->send("<presence type='subscribe' to='{$xml->attrs['from']}' from='{$this->fulljid}' />");
-			}
-			$this->event('subscription_requested', $payload);
-		} elseif(array_key_exists('type', $xml->attrs) and $xml->attrs['type'] == 'subscribed') {
-			$this->event('subscription_accepted', $payload);
-		} else {
-			$this->event('presence', $payload);
-		}
-	}
+    $payload = array();
+
+    $payload['from'] = $xml->attrs['from'];
+
+    if ($xml->hasSub('x')) {
+
+      $x = $xml->sub('x');
+      if ($x->hasSub('status')) {
+
+        switch ($x->sub('status')->attrs['code']) {
+
+          case '201':
+            $id = $this->getId();
+            $this->addIdHandler($id, 'room_join_handler');
+            $this->sendIq($payload['from'], 'set', 'http://jabber.org/protocol/muc#owner', $this->x(array('xmlns' => 'jabber:x:data', 'type' => 'submit')), null, $id);
+            $this->log->log('Presence: sending default config for created room...',  XMPPHP_Log::LEVEL_DEBUG);
+            break;
+
+          case '110':
+            $payload['affiliation'] = $x->sub('item')->attrs['affiliation'];
+            $payload['role']        = $x->sub('item')->attrs['role'];
+            $this->event('room_joined');
+            break;
+        }
+      }
+    }
+
+    if ($xml->hasSub('error')) {
+      // TODO: $error->attrs['type']; different types of error may need different management
+      $error = $xml->sub('error');
+      $this->event('presence_error', $payload);
+    }
+
+    $payload['type']     = (isset($xml->attrs['type'])) ? $xml->attrs['type'] : 'available';
+    $payload['show']     = (isset($xml->sub('show')->data)) ? $xml->sub('show')->data : $payload['type'];
+    $payload['status']   = (isset($xml->sub('status')->data)) ? $xml->sub('status')->data : '';
+    $payload['priority'] = (isset($xml->sub('priority')->data)) ? intval($xml->sub('priority')->data) : 0;
+    $payload['xml']      = $xml;
+
+    if ($this->track_presence) {
+      $this->roster->setPresence($payload['from'], $payload['priority'], $payload['show'], $payload['status']);
+    }
+
+    $this->log->log('Presence: ' . $payload['from'] . ' [' . $payload['show'] . '] ' . $payload['status'],  XMPPHP_Log::LEVEL_DEBUG);
+
+    if (array_key_exists('type', $xml->attrs) AND $xml->attrs['type'] == 'subscribe') {
+
+      if ($this->auto_subscribe) {
+        $sprintf = '<presence type="%s" to="%s" from="%s" />';
+        $this->send(sprintf($sprintf, 'subscribed', $xml->attrs['from'], $this->fulljid));
+        $this->send(sprintf($sprintf, 'subscribe', $xml->attrs['from'], $this->fulljid));
+      }
+      $this->event('subscription_requested', $payload);
+    }
+    elseif (array_key_exists('type', $xml->attrs) AND $xml->attrs['type'] == 'subscribed') {
+      $this->event('subscription_accepted', $payload);
+    }
+    else {
+      $this->event('presence', $payload);
+    }
+  }
 
 	/**
 	 * Features handler
