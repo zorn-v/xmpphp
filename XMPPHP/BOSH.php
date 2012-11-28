@@ -252,20 +252,24 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
     $this->__sendBody($this->__buildBody($msg), true);
   }
 
-		public function reset() {
-			$this->xml_depth = 0;
-			unset($this->xmlobj);
-			$this->xmlobj = array();
-			$this->setupParser();
-			#$this->send($this->stream_start);
-			$body = $this->__buildBody();
-			$body->addAttribute('to', $this->host);
-			$body->addAttribute('xmpp:restart', 'true', 'urn:xmpp:xbosh');
-			$buff = "<stream:stream xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams'>";
-			$response = $this->__sendBody($body);
-			$this->been_reset = true;
-			xml_parse($this->parser, $buff, false);
-		}
+  /**
+   * Reset
+   *
+   */
+  public function reset() {
+
+    $this->xml_depth = 0;
+    unset($this->xmlobj);
+    $this->xmlobj = array();
+    $this->setupParser();
+    $body = $this->__buildBody();
+    $body->addAttribute('to', $this->host);
+    $body->addAttribute('xmpp:restart', 'true', 'urn:xmpp:xbosh');
+    $buff = '<stream:stream xmlns="jabber:client" xmlns:stream="http://etherx.jabber.org/streams">';
+    $response = $this->__sendBody($body);
+    $this->been_reset = true;
+    xml_parse($this->parser, $buff, false);
+  }
 
 		public function loadSession() {
 			if($this->session=='ON_FILE'){
