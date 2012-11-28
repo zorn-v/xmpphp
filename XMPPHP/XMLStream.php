@@ -725,95 +725,136 @@ class XMPPHP_XMLStream {
     $this->xmlobj[$this->xml_depth] = $obj;
   }
 
-	/**
-	 * XML end callback
-	 * 
-	 * @see xml_set_element_handler
-	 *
-	 * @param resource $parser
-	 * @param string   $name
-	 */
-	public function endXML($parser, $name) {
-		#$this->log->log("Ending $name",  XMPPHP_Log::LEVEL_DEBUG);
-		#print "$name\n";
-		if($this->been_reset) {
-			$this->been_reset = false;
-			$this->xml_depth = 0;
-		}
-		$this->xml_depth--;
-		if($this->xml_depth == 1) {
-			#clean-up old objects
-			#$found = false; #FIXME This didn't appear to be in use --Gar
-			foreach($this->xpathhandlers as $handler) {
-				if (is_array($this->xmlobj) && array_key_exists(2, $this->xmlobj)) {
-					$searchxml = $this->xmlobj[2];
-					$nstag = array_shift($handler[0]);
-					if (($nstag[0] == null or $searchxml->ns == $nstag[0]) and ($nstag[1] == "*" or $nstag[1] == $searchxml->name)) {
-						foreach($handler[0] as $nstag) {
-							if ($searchxml !== null and $searchxml->hasSub($nstag[1], $ns=$nstag[0])) {
-								$searchxml = $searchxml->sub($nstag[1], $ns=$nstag[0]);
-							} else {
-								$searchxml = null;
-								break;
-							}
-						}
-						if ($searchxml !== null) {
-							if( is_object( $handler[1] ) and is_callable( $handler[1] ) ) {
-								$this->log->log("Calling Closure",  XMPPHP_Log::LEVEL_DEBUG);
-								$handler[1]($this->xmlobj[2]);
-							} else {
-								if($handler[2] === null) $handler[2] = $this;
-								$this->log->log("Calling {$handler[1]}",  XMPPHP_Log::LEVEL_DEBUG);
-								$handler[2]->$handler[1]($this->xmlobj[2]);
-							}
-						}
-					}
-				}
-			}
-			foreach($this->nshandlers as $handler) {
-				if($handler[4] != 1 and array_key_exists(2, $this->xmlobj) and  $this->xmlobj[2]->hasSub($handler[0])) {
-					$searchxml = $this->xmlobj[2]->sub($handler[0]);
-				} elseif(is_array($this->xmlobj) and array_key_exists(2, $this->xmlobj)) {
-					$searchxml = $this->xmlobj[2];
-				}
-				if($searchxml !== null and $searchxml->name == $handler[0] and ($searchxml->ns == $handler[1] or (!$handler[1] and $searchxml->ns == $this->default_ns))) {
-					if($handler[3] === null) $handler[3] = $this;
-					$this->log->log("Calling {$handler[2]}",  XMPPHP_Log::LEVEL_DEBUG);
-					$handler[3]->$handler[2]($this->xmlobj[2]);
-				}
-			}
-			foreach($this->idhandlers as $id => $handler) {
-				if(array_key_exists('id', $this->xmlobj[2]->attrs) and $this->xmlobj[2]->attrs['id'] == $id) {
-					if($handler[1] === null) $handler[1] = $this;
-					$handler[1]->$handler[0]($this->xmlobj[2]);
-					#id handlers are only used once
-					unset($this->idhandlers[$id]);
-					break;
-				}
-			}
-			if(is_array($this->xmlobj)) {
-				$this->xmlobj = array_slice($this->xmlobj, 0, 1);
-				if(isset($this->xmlobj[0]) && $this->xmlobj[0] instanceof XMPPHP_XMLObj) {
-					$this->xmlobj[0]->subs = null;
-				}
-			}
-			unset($this->xmlobj[2]);
-		}
-		if($this->xml_depth == 0 and !$this->been_reset) {
-			if(!$this->disconnected) {
-				if(!$this->sent_disconnect) {
-					$this->send($this->stream_end);
-				}
-				$this->disconnected = true;
-				$this->sent_disconnect = true;
-				fclose($this->socket);
-				if($this->reconnect) {
-					$this->doReconnect();
-				}
-			}
-			$this->event('end_stream');
-		}
-	}
+  /**
+   * XML end callback
+   *
+   * @see xml_set_element_handler
+   *
+   * @param resource $parser
+   * @param string   $name
+   */
+  public function endXML($parser, $name) {
+
+    $this->log->log('Ending ' . $name,  XMPPHP_Log::LEVEL_DEBUG);
+
+    if ($this->been_reset) {
+      $this->been_reset = false;
+      $this->xml_depth  = 0;
+    }
+
+    $this->xml_depth--;
+
+    if ($this->xml_depth == 1) {
+
+      // Clean-up old objects
+
+      foreach ($this->xpathhandlers as $handler) {
+
+        if (is_array($this->xmlobj) AND array_key_exists(2, $this->xmlobj)) {
+
+          $searchxml = $this->xmlobj[2];
+          $nstag     = array_shift($handler[0]);
+
+          if (($nstag[0] == null OR $searchxml->ns == $nstag[0]) AND ($nstag[1] == '*' OR $nstag[1] == $searchxml->name)) {
+
+            foreach ($handler[0] as $nstag) {
+
+              if ($searchxml !== null AND $searchxml->hasSub($nstag[1], $ns = $nstag[0])) {
+                $searchxml = $searchxml->sub($nstag[1], $ns = $nstag[0]);
+              }
+              else {
+                $searchxml = null;
+                break;
+              }
+            }
+
+            if ($searchxml !== null) {
+
+              if (is_object($handler[1]) AND is_callable($handler[1])) {
+                $this->log->log('Calling Closure',  XMPPHP_Log::LEVEL_DEBUG);
+                $handler[1]($this->xmlobj[2]);
+              }
+              else {
+
+                if ($handler[2] === null) {
+                  $handler[2] = $this;
+                }
+
+                $this->log->log('Calling ' . $handler[1],  XMPPHP_Log::LEVEL_DEBUG);
+                $handler[2]->$handler[1]($this->xmlobj[2]);
+              }
+            }
+          }
+        }
+      }
+
+      foreach ($this->nshandlers as $handler) {
+
+        if ($handler[4] != 1 AND array_key_exists(2, $this->xmlobj) AND $this->xmlobj[2]->hasSub($handler[0])) {
+          $searchxml = $this->xmlobj[2]->sub($handler[0]);
+        }
+        elseif (is_array($this->xmlobj) AND array_key_exists(2, $this->xmlobj)) {
+          $searchxml = $this->xmlobj[2];
+        }
+
+        if ($searchxml !== null AND $searchxml->name == $handler[0] AND ($searchxml->ns == $handler[1] OR (!$handler[1] AND $searchxml->ns == $this->default_ns))) {
+
+          if ($handler[3] === null) {
+            $handler[3] = $this;
+          }
+
+          $this->log->log('Calling ' . $handler[2],  XMPPHP_Log::LEVEL_DEBUG);
+          $handler[3]->$handler[2]($this->xmlobj[2]);
+        }
+      }
+
+      foreach ($this->idhandlers as $id => $handler) {
+
+        if (array_key_exists('id', $this->xmlobj[2]->attrs) AND $this->xmlobj[2]->attrs['id'] == $id) {
+
+          if ($handler[1] === null) {
+            $handler[1] = $this;
+          }
+
+          $handler[1]->$handler[0]($this->xmlobj[2]);
+          // id handlers are only used once
+          unset($this->idhandlers[$id]);
+          break;
+        }
+      }
+
+      if (is_array($this->xmlobj)) {
+
+        $this->xmlobj = array_slice($this->xmlobj, 0, 1);
+
+        if (isset($this->xmlobj[0]) AND $this->xmlobj[0] INSTANCEOF XMPPHP_XMLObj) {
+          $this->xmlobj[0]->subs = null;
+        }
+      }
+
+      unset($this->xmlobj[2]);
+    }
+
+    if ($this->xml_depth == 0 AND !$this->been_reset) {
+
+      if (!$this->disconnected) {
+
+        if (!$this->sent_disconnect) {
+          $this->send($this->stream_end);
+        }
+
+        $this->disconnected    = true;
+        $this->sent_disconnect = true;
+        fclose($this->socket);
+
+        if ($this->reconnect) {
+          $this->doReconnect();
+        }
+      }
+
+      $this->event('end_stream');
+    }
+  }
 
 	/**
 	 * XML character callback
