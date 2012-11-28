@@ -97,18 +97,19 @@ class XMPPHP_XMLObj {
     $this->data = $data;
   }
 
-	/**
-	 * Dump this XML Object to output.
-	 *
-	 * @param integer $depth
-	 */
-	public function printObj($depth = 0) {
-		print str_repeat("\t", $depth) . $this->name . " " . $this->ns . ' ' . $this->data;
-		print "\n";
-		foreach($this->subs as $sub) {
-			$sub->printObj($depth + 1);
-		}
-	}
+  /**
+   * Dump this XML Object to output.
+   *
+   * @param integer $depth
+   */
+  public function printObj($depth = 0) {
+
+    print str_repeat("\t", $depth) . $this->name . ' ' . $this->ns . ' ' . $this->data . "\n";
+
+    foreach ($this->subs as $sub) {
+      $sub->printObj($depth + 1);
+    }
+  }
 
 	/**
 	 * Return this XML Object in xml notation
