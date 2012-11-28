@@ -666,53 +666,64 @@ class XMPPHP_XMLStream {
     return $payload;
   }
 
-	/**
-	 * Obsolete?
-	 */
-	public function Xapply_socket($socket) {
-		$this->socket = $socket;
-	}
+  /**
+   * Obsolete?
+   */
+  public function Xapply_socket($socket) {
+    $this->socket = $socket;
+  }
 
-	/**
-	 * XML start callback
-	 * 
-	 * @see xml_set_element_handler
-	 *
-	 * @param resource $parser
-	 * @param string   $name
-	 */
-	public function startXML($parser, $name, $attr) {
-		if($this->been_reset) {
-			$this->been_reset = false;
-			$this->xml_depth = 0;
-		}
-		$this->xml_depth++;
-		if(array_key_exists('XMLNS', $attr)) {
-			$this->current_ns[$this->xml_depth] = $attr['XMLNS'];
-		} else {
-			$this->current_ns[$this->xml_depth] = $this->current_ns[$this->xml_depth - 1];
-			if(!$this->current_ns[$this->xml_depth]) $this->current_ns[$this->xml_depth] = $this->default_ns;
-		}
-		$ns = $this->current_ns[$this->xml_depth];
-		foreach($attr as $key => $value) {
-			if(strstr($key, ":")) {
-				$key = explode(':', $key);
-				$key = $key[1];
-				$this->ns_map[$key] = $value;
-			}
-		}
-		if(!strstr($name, ":") === false)
-		{
-			$name = explode(':', $name);
-			$ns = $this->ns_map[$name[0]];
-			$name = $name[1];
-		}
-		$obj = new XMPPHP_XMLObj($name, $ns, $attr);
-		if($this->xml_depth > 1) {
-			$this->xmlobj[$this->xml_depth - 1]->subs[] = $obj;
-		}
-		$this->xmlobj[$this->xml_depth] = $obj;
-	}
+  /**
+   * XML start callback
+   *
+   * @see xml_set_element_handler
+   *
+   * @param resource $parser
+   * @param string   $name
+   */
+  public function startXML($parser, $name, $attr) {
+
+    if ($this->been_reset) {
+      $this->been_reset = false;
+      $this->xml_depth  = 0;
+    }
+
+    $this->xml_depth++;
+
+    if (array_key_exists('XMLNS', $attr)) {
+      $this->current_ns[$this->xml_depth] = $attr['XMLNS'];
+    }
+    else {
+      $this->current_ns[$this->xml_depth] = $this->current_ns[$this->xml_depth - 1];
+      if (!$this->current_ns[$this->xml_depth]) {
+        $this->current_ns[$this->xml_depth] = $this->default_ns;
+      }
+    }
+
+    $ns = $this->current_ns[$this->xml_depth];
+
+    foreach ($attr as $key => $value) {
+      if (strstr($key, ':')) {
+        $key = explode(':', $key);
+        $key = $key[1];
+        $this->ns_map[$key] = $value;
+      }
+    }
+
+    if (!strstr($name, ':') === false) {
+      $name = explode(':', $name);
+      $ns   = $this->ns_map[$name[0]];
+      $name = $name[1];
+    }
+
+    $obj = new XMPPHP_XMLObj($name, $ns, $attr);
+
+    if ($this->xml_depth > 1) {
+      $this->xmlobj[$this->xml_depth - 1]->subs[] = $obj;
+    }
+
+    $this->xmlobj[$this->xml_depth] = $obj;
+  }
 
 	/**
 	 * XML end callback
