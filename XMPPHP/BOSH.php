@@ -349,20 +349,31 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
       fclose($session_file_fp);
     }
   }
-		
-		public function disconnect(){
-			parent::disconnect();
 
-			if($this->session=='ON_FILE')
-				unlink(sys_get_temp_dir()."/".$this->user."_".$this->server."_session");
-			else{
-				unset($_SESSION['XMPPHP_BOSH']['RID']);
-				unset($_SESSION['XMPPHP_BOSH']['SID']);
-				unset($_SESSION['XMPPHP_BOSH']['authed']);
-				unset($_SESSION['XMPPHP_BOSH']['basejid']);
-				unset($_SESSION['XMPPHP_BOSH']['fulljid']);
-				unset($_SESSION['XMPPHP_BOSH']['inactivity']);
-				unset($_SESSION['XMPPHP_BOSH']['lat']);
-			}
-		}
+  /**
+   * Disconnect
+   *
+   */
+  public function disconnect(){
+
+    parent::disconnect();
+
+    if ($this->session == 'ON_FILE') {
+      unlink($this->getSessionFile());
+    }
+    else {
+      $keys = array('RID', 'SID', 'authed', 'basejid', 'fulljid', 'inactivity', 'lat');
+      foreach ($keys as $key) {
+        unset($_SESSION['XMPPHP_BOSH'][$key]);
+      }
+    }
+  }
+
+  /**
+   * Get the session file
+   *
+   */
+  public function getSessionFile() {
+    return sys_get_temp_dir() . '/' . $this->user . '_' . $this->server . '_session';
+  }
 }
