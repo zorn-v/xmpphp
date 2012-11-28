@@ -248,18 +248,23 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $this->send($presence);
   }
 
-	/**
-	 * Add user to Roster
-	 *
-	 * @param string $jid user jid
-	 * @param string $name user nickname
-	 * @param string $group group to add
-	 */
-	public function RosterAddUser($jid, $name=null, $group=null) {
-		$payload = "<item jid='$jid'".($name ? " name='" . htmlspecialchars($name) . "'" : '')."/>\n".
-		($group?'<group>'.htmlspecialchars($group, ENT_QUOTES, 'UTF-8').'</group>':'');
-		$this->sendIq(NULL, 'set', "jabber:iq:roster", $payload);
-	}
+  /**
+   * Add user to Roster
+   *
+   * @param string $jid user jid
+   * @param string $name user nickname
+   * @param string $group group to add
+   */
+  public function RosterAddUser($jid, $name = null, $group = null) {
+
+    $name    = htmlspecialchars($name);
+    $group   = htmlspecialchars($group, ENT_QUOTES, 'UTF-8');
+    $name    = ($name) ? 'name="' . $name . '"': '';
+    $group   = ($group) ? '<group>' . $group . '</group>' : '';
+    $sprintf = '<item jid="%s" %s />%s';
+    $payload = sprintf($sprintf, $jid, $name, $group);
+    $this->sendIq(null, 'set', 'jabber:iq:roster', $payload);
+  }
 
 	/**
 	 * Send ID action
