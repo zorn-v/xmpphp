@@ -664,25 +664,31 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $vcard_array['from'] = $xml->attrs['from'];
     $this->event('vcard', $vcard_array);
   }
-	
-	/*
-	* create xml for x tag
-	*
-	* @param string $attribs namespace or an associative array of attributes
-	* @param string $payload 
-	*/
-	protected function x($attribs=null, $payload=null){
-		$out = "<x";
 
-		if($attribs!=null){
-			if(is_array($attribs) === false)
-				$attribs = array("xmlns"=>$attribs);
-			foreach($attribs as $attrib=>$value)
-				$out .= " $attrib='$value'";				
-		}
-		$out .= $payload!=null? ">$payload</x>":"/>";
-		return $out;
-	}
+  /**
+   * Create xml for x tag
+   *
+   * @param string $attribs namespace or an associative array of attributes
+   * @param string $payload
+   */
+  protected function x($attribs = null, $payload = null) {
+
+    $output = '<x';
+
+    if ($attribs != null) {
+
+      if (is_array($attribs) === false) {
+        $attribs = array('xmlns' => $attribs);
+      }
+      foreach ($attribs as $attrib => $value) {
+        $output .= ' ' . $attrib . '="' . $value . '"';
+      }
+    }
+
+    $output .= ($payload != null) ? '>' . $payload . '</x>' : ' />';
+
+    return $output;
+  }
 	
 	protected function room_join_handler($xml) {
 		$this->event('room_joined');
