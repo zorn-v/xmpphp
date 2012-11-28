@@ -163,23 +163,35 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
     return $output;
   }
 
-		public function __buildBody($sub=null) {
-			$xml = new SimpleXMLElement("<body xmlns='http://jabber.org/protocol/httpbind' xmlns:xmpp='urn:xmpp:xbosh' />");
-			$xml->addAttribute('content', 'text/xml; charset=utf-8');
-			$xml->addAttribute('rid', $this->rid);
-			$this->rid += 1;
-			if($this->sid) $xml->addAttribute('sid', $this->sid);
-			#if($this->sid) $xml->addAttribute('xmlns', 'http://jabber.org/protocol/httpbind');
-			$xml->addAttribute('xml:lang', 'en');
-			if($sub !== NULL) { // ok, so simplexml is lame
-				$p = dom_import_simplexml($xml);
-				$c = dom_import_simplexml($sub);
-				$cn = $p->ownerDocument->importNode($c, true);
-				$p->appendChild($cn);
-				$xml = simplexml_import_dom($p);
-			}
-			return $xml;
-		}
+  /**
+   * Build body
+   *
+   * @param $sub
+   */
+  public function __buildBody($sub = null) {
+
+    $xml = new SimpleXMLElement('<body xmlns="http://jabber.org/protocol/httpbind" xmlns:xmpp="urn:xmpp:xbosh" />');
+    $xml->addAttribute('content', 'text/xml; charset=utf-8');
+    $xml->addAttribute('rid', $this->rid);
+    $this->rid++;
+    if ($this->sid) {
+      $xml->addAttribute('sid', $this->sid);
+    }
+
+    $xml->addAttribute('xml:lang', 'en');
+
+    if ($sub !== null) {
+
+      // Ok, so simplexml is lame
+      $p   = dom_import_simplexml($xml);
+      $c   = dom_import_simplexml($sub);
+      $cn  = $p->ownerDocument->importNode($c, true);
+      $p->appendChild($cn);
+      $xml = simplexml_import_dom($p);
+    }
+
+    return $xml;
+  }
 
 		//null params are not used and just to statify Strict Function Declaration
 		public function __process($null1=NULL,$null2=NULL) {
