@@ -120,45 +120,47 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
    */
   protected $auth_mechanism_preferred = 'DIGEST-MD5';
 
-	/**
-	 * Constructor
-	 *
-	 * @param string  $host
-	 * @param integer $port
-	 * @param string  $user
-	 * @param string  $password
-	 * @param string  $resource
-	 * @param string  $server
-	 * @param boolean $printlog
-	 * @param string  $loglevel
-	 */
-	public function __construct($host, $port, $user, $password, $resource, $server = null, $printlog = false, $loglevel = null) {
-		parent::__construct($host, $port, $printlog, $loglevel);
-		
-		$this->user	 = $user;
-		$this->password = $password;
-		$this->resource = $resource;
-		if(!$server) $server = $host;
-		$this->server = $server;
-		$this->basejid = $this->user . '@' . $this->server;
+  /**
+   * Constructor
+   *
+   * @param string  $host
+   * @param integer $port
+   * @param string  $user
+   * @param string  $password
+   * @param string  $resource
+   * @param string  $server
+   * @param boolean $printlog
+   * @param string  $loglevel
+   */
+  public function __construct($host, $port, $user, $password, $resource, $server = null, $printlog = false, $loglevel = null) {
 
-		$this->roster = new Roster();
-		$this->track_presence = true;
+    parent::__construct($host, $port, $printlog, $loglevel);
 
-		$this->stream_start = '<stream:stream to="' . $server . '" xmlns:stream="http://etherx.jabber.org/streams" xmlns="jabber:client" version="1.0">';
-		$this->stream_end   = '</stream:stream>';
-		$this->default_ns   = 'jabber:client';
-		
-		$this->addXPathHandler('{http://etherx.jabber.org/streams}features', 'features_handler');
-		$this->addXPathHandler('{urn:ietf:params:xml:ns:xmpp-sasl}success', 'sasl_success_handler');
-		$this->addXPathHandler('{urn:ietf:params:xml:ns:xmpp-sasl}failure', 'sasl_failure_handler');
-		$this->addXPathHandler('{urn:ietf:params:xml:ns:xmpp-tls}proceed', 'tls_proceed_handler');
-		$this->addXPathHandler('{jabber:client}message', 'message_handler');
-		$this->addXPathHandler('{jabber:client}presence', 'presence_handler');
+    if (!$server) {
+      $server = $host;
+    }
 
-		// For DIGEST-MD5 auth :
-		$this->addXPathHandler('{urn:ietf:params:xml:ns:xmpp-sasl}challenge', 'sasl_challenge_handler');
-	}
+    $this->user           = $user;
+    $this->password       = $password;
+    $this->resource       = $resource;
+    $this->server         = $server;
+    $this->basejid        = $this->user . '@' . $this->server;
+    $this->roster         = new XMPPHP_Roster();
+    $this->track_presence = true;
+    $this->stream_start   = '<stream:stream to="' . $server . '" xmlns:stream="http://etherx.jabber.org/streams" xmlns="jabber:client" version="1.0">';
+    $this->stream_end     = '</stream:stream>';
+    $this->default_ns     = 'jabber:client';
+
+    $this->addXPathHandler('{http://etherx.jabber.org/streams}features', 'features_handler');
+    $this->addXPathHandler('{urn:ietf:params:xml:ns:xmpp-sasl}success', 'sasl_success_handler');
+    $this->addXPathHandler('{urn:ietf:params:xml:ns:xmpp-sasl}failure', 'sasl_failure_handler');
+    $this->addXPathHandler('{urn:ietf:params:xml:ns:xmpp-tls}proceed', 'tls_proceed_handler');
+    $this->addXPathHandler('{jabber:client}message', 'message_handler');
+    $this->addXPathHandler('{jabber:client}presence', 'presence_handler');
+
+    // For DIGEST-MD5 auth:
+    $this->addXPathHandler('{urn:ietf:params:xml:ns:xmpp-sasl}challenge', 'sasl_challenge_handler');
+  }
 
 	/**
 	 * Turn encryption on/ff
