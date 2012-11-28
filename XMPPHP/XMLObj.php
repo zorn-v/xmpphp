@@ -74,24 +74,28 @@ class XMPPHP_XMLObj {
    */
   public $data = '';
 
-	/**
-	 * Constructor
-	 *
-	 * @param string $name
-	 * @param string $ns
-	 * @param array  $attrs
-	 * @param string $data
-	 */
-	public function __construct($name, $ns = '', $attrs = array(), $data = '') {
-		$this->name = strtolower($name);
-		$this->ns   = $ns;
-		if(is_array($attrs) && count($attrs)) {
-			foreach($attrs as $key => $value) {
-				$this->attrs[strtolower($key)] = $value;
-			}
-		}
-		$this->data = $data;
-	}
+  /**
+   * Constructor
+   *
+   * @param string $name
+   * @param string $ns
+   * @param array  $attrs
+   * @param string $data
+   */
+  public function __construct($name, $ns = '', $attrs = array(), $data = '') {
+
+    $this->name = strtolower($name);
+    $this->ns   = $ns;
+
+    if (is_array($attrs) AND count($attrs)) {
+
+      foreach ($attrs as $key => $value) {
+        $this->attrs[strtolower($key)] = $value;
+      }
+    }
+
+    $this->data = $data;
+  }
 
 	/**
 	 * Dump this XML Object to output.
