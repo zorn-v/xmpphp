@@ -523,22 +523,24 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     }
   }
 
-	/**
-	 * Resource bind handler
-	 *
-	 * @param string $xml
-	 */
-	protected function resource_bind_handler($xml) {
-		if($xml->attrs['type'] == 'result') {
-			$this->log->log("Bound to " . $xml->sub('bind')->sub('jid')->data);
-			$this->fulljid = $xml->sub('bind')->sub('jid')->data;
-			$jidarray = explode('/',$this->fulljid);
-			$this->jid = $jidarray[0];
-		}
-		$id = $this->getId();
-		$this->addIdHandler($id, 'session_start_handler');
-		$this->send("<iq xmlns='jabber:client' type='set' id='$id'><session xmlns='urn:ietf:params:xml:ns:xmpp-session' /></iq>");
-	}
+  /**
+   * Resource bind handler
+   *
+   * @param string $xml
+   */
+  protected function resource_bind_handler($xml) {
+
+    if ($xml->attrs['type'] == 'result') {
+      $this->log->log('Bound to ' . $xml->sub('bind')->sub('jid')->data);
+      $this->fulljid = $xml->sub('bind')->sub('jid')->data;
+      $this->jid     = array_shift(explode('/', $this->fulljid));
+    }
+
+    $id      = $this->getId();
+    $session = '<session xmlns="urn:ietf:params:xml:ns:xmpp-session" />';
+    $this->addIdHandler($id, 'session_start_handler');
+    $this->send('<iq xmlns="jabber:client" type="set" id="' . $id . '">' . $session . '</iq>');
+  }
 
 	/**
 	* Retrieves the roster
