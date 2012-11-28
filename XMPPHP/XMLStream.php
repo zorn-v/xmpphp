@@ -378,21 +378,21 @@ class XMPPHP_XMLStream {
     }
   }
 
-	/**
-	 * Reconnect XMPP Host
-	 *
-	 * @throws XMPPHP_Exception When the connection fails
-	 * @uses   $reconnectTimeout
-	 * @see    setReconnectTimeout()
-	 */
-	public function doReconnect() {
-		if(!$this->is_server) {
-			$this->log->log("Reconnecting ($this->reconnectTimeout)...",  XMPPHP_Log::LEVEL_WARNING);
-			$this->connect($this->reconnectTimeout, false, false);
-			$this->reset();
-			$this->event('reconnect');
-		}
-	}
+  /**
+   * Reconnect XMPP Host
+   *
+   * @throws XMPPHP_Exception When the connection fails
+   * @uses   $reconnectTimeout
+   * @see    setReconnectTimeout()
+   */
+  public function doReconnect() {
+    if (!$this->is_server) {
+      $this->log->log('Reconnecting (' . $this->reconnectTimeout . ')...',  XMPPHP_Log::LEVEL_WARNING);
+      $this->connect($this->reconnectTimeout, false, false);
+      $this->reset();
+      $this->event('reconnect');
+    }
+  }
 
 	public function setReconnectTimeout($timeout) {
 		$this->reconnectTimeout = $timeout;
