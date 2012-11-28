@@ -377,53 +377,69 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     }
   }
 
-	/**
-	 * Features handler
-	 *
-	 * @param string $xml
-	 */
-	protected function features_handler($xml) {
-		if($xml->hasSub('starttls') and $this->use_encryption) {
-			$this->send("<starttls xmlns='urn:ietf:params:xml:ns:xmpp-tls'><required /></starttls>");
-		} elseif($xml->hasSub('bind') and $this->authed) {
-			$id = $this->getId();
-			$this->addIdHandler($id, 'resource_bind_handler');
-			$this->send("<iq xmlns=\"jabber:client\" type=\"set\" id=\"$id\"><bind xmlns=\"urn:ietf:params:xml:ns:xmpp-bind\"><resource>{$this->resource}</resource></bind></iq>");
-		} else {
-			$this->log->log("Attempting Auth...");
-			if ($this->password) {
-				$mechanism = 'PLAIN'; // default;
-				if ($xml->hasSub('mechanisms') && $xml->sub('mechanisms')->hasSub('mechanism')) {
-					// Get the list of all available auth mechanism that we can use
-					$available = array();
-					foreach ($xml->sub('mechanisms')->subs as $sub) {
-						if ($sub->name == 'mechanism') {
-							if (in_array($sub->data, $this->auth_mechanism_supported)) {
-								$available[$sub->data] = $sub->data;
-							}
-						}
-					}
-					if (isset($available[$this->auth_mechanism_preferred])) {
-						$mechanism = $this->auth_mechanism_preferred;
-					} else {
-						// use the first available
-						$mechanism = reset($available);
-					}
-					$this->log->log("Trying $mechanism (available : " . implode(',', $available) . ')');
-				}
-				switch ($mechanism) {
-					case 'PLAIN':
-						$this->send("<auth xmlns='urn:ietf:params:xml:ns:xmpp-sasl' mechanism='PLAIN'>" . base64_encode("\x00" . $this->user . "\x00" . $this->password) . "</auth>");
-						break;
-					case 'DIGEST-MD5':
-						$this->send("<auth xmlns='urn:ietf:params:xml:ns:xmpp-sasl' mechanism='DIGEST-MD5' />");
-						break;
-				}
-			} else {
-                        $this->send("<auth xmlns='urn:ietf:params:xml:ns:xmpp-sasl' mechanism='ANONYMOUS'/>");
-			}	
-		}
-	}
+  /**
+   * Features handler
+   *
+   * @param string $xml
+   */
+  protected function features_handler($xml) {
+
+    if ($xml->hasSub('starttls') AND $this->use_encryption) {
+      $this->send('<starttls xmlns="urn:ietf:params:xml:ns:xmpp-tls"><required /></starttls>');
+    }
+    elseif ($xml->hasSub('bind') AND $this->authed) {
+      $id      = $this->getId();
+      $this->addIdHandler($id, 'resource_bind_handler');
+      $bind    = '<bind xmlns="urn:ietf:params:xml:ns:xmpp-bind"><resource>' . $this->resource . '</resource></bind>';
+      $sprintf = '<iq xmlns="jabber:client" type="set" id="%s">%s</iq>';
+      $this->send(sprintf($sprintf, $id, $bind));
+    }
+    else {
+
+      $this->log->log('Attempting Auth...');
+
+      if ($this->password) {
+
+        $mechanism = 'PLAIN'; // default
+        if ($xml->hasSub('mechanisms') AND $xml->sub('mechanisms')->hasSub('mechanism')) {
+
+          // Get the list of all available auth mechanism that we can use
+          $available = array();
+          foreach ($xml->sub('mechanisms')->subs as $sub) {
+            if ($sub->name == 'mechanism') {
+              if (in_array($sub->data, $this->auth_mechanism_supported)) {
+                $available[$sub->data] = $sub->data;
+              }
+            }
+          }
+
+          if (isset($available[$this->auth_mechanism_preferred])) {
+            $mechanism = $this->auth_mechanism_preferred;
+          }
+          else {
+            // use the first available
+            $mechanism = reset($available);
+          }
+          $this->log->log('Trying ' . $mechanism . ' (available: ' . implode(', ', $available) . ')');
+        }
+
+        switch ($mechanism) {
+
+          case 'PLAIN':
+            $password = base64_encode("\x00" . $this->user . "\x00" . $this->password);
+            $this->send('<auth xmlns="urn:ietf:params:xml:ns:xmpp-sasl" mechanism="PLAIN">' . $password . '</auth>');
+            break;
+
+          case 'DIGEST-MD5':
+            $this->send('<auth xmlns="urn:ietf:params:xml:ns:xmpp-sasl" mechanism="DIGEST-MD5" />');
+            break;
+        }
+      }
+      else {
+        $this->send('<auth xmlns="urn:ietf:params:xml:ns:xmpp-sasl" mechanism="ANONYMOUS" />');
+      }
+    }
+  }
 
 	/**
 	 * SASL success handler
