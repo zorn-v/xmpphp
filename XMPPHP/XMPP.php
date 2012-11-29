@@ -34,7 +34,7 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'XMLStream.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Roster.php';
 
 /**
- * XMPPHP Main Class
+ * XMPPHP XMPP
  *
  * @package   XMPPHP
  * @author    Nathanael C. Fritz <JID: fritzy@netflint.net>
