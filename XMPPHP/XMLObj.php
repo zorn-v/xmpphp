@@ -28,7 +28,7 @@
  */
 
 /**
- * XMPPHP XML Object
+ * XMPPHP XMLObject
  *
  * @package   XMPPHP
  * @author    Nathanael C. Fritz <JID: fritzy@netflint.net>
