@@ -369,6 +369,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
         $this->send(sprintf($sprintf, 'subscribed', $xml->attrs['from'], $this->fulljid));
         $this->send(sprintf($sprintf, 'subscribe', $xml->attrs['from'], $this->fulljid));
       }
+
       $this->event('subscription_requested', $payload);
     }
     elseif (array_key_exists('type', $xml->attrs) AND $xml->attrs['type'] == 'subscribed') {
@@ -390,6 +391,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
       $this->send('<starttls xmlns="urn:ietf:params:xml:ns:xmpp-tls"><required /></starttls>');
     }
     elseif ($xml->hasSub('bind') AND $this->authed) {
+
       $id      = $this->getId();
       $this->addIdHandler($id, 'resource_bind_handler');
       $bind    = '<bind xmlns="urn:ietf:params:xml:ns:xmpp-bind"><resource>' . $this->resource . '</resource></bind>';
@@ -403,11 +405,14 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
       if ($this->password) {
 
         $mechanism = 'PLAIN'; // default
+
         if ($xml->hasSub('mechanisms') AND $xml->sub('mechanisms')->hasSub('mechanism')) {
 
           // Get the list of all available auth mechanism that we can use
           $available = array();
+
           foreach ($xml->sub('mechanisms')->subs as $sub) {
+
             if ($sub->name == 'mechanism') {
               if (in_array($sub->data, $this->auth_mechanism_supported)) {
                 $available[$sub->data] = $sub->data;
@@ -419,9 +424,10 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
             $mechanism = $this->auth_mechanism_preferred;
           }
           else {
-            // use the first available
+            // Use the first available
             $mechanism = reset($available);
           }
+
           $this->log->log('Trying ' . $mechanism . ' (available: ' . implode(', ', $available) . ')');
         }
 
@@ -498,19 +504,19 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
         $vars['realm'] = '';
       }
 
-      // Now, the magic...
-      $a1 = sprintf('%s:%s:%s', $this->user, $vars['realm'], $this->password);
+      // Now, the magic... when the dreams come true!
+      $auth1 = sprintf('%s:%s:%s', $this->user, $vars['realm'], $this->password);
       if ($vars['algorithm'] == 'md5-sess') {
-        $a1 = pack('H32', md5($a1)) . ':' . $vars['nonce'] . ':' . $vars['cnonce'];
+        $auth1 = sprintf('%s:%s:%s', pack('H32', md5($auth1)), $vars['nonce'], $vars['cnonce']);
       }
 
-      $a2       = 'AUTHENTICATE:' . $vars['digest-uri'];
-      $password = md5(sprintf('%s:%s:%s:%s:%s:%s', md5($a1), $vars['nonce'], $vars['nc'], $vars['cnonce'], $vars['qop'], md5($a2)));
+      $auth2    = 'AUTHENTICATE:' . $vars['digest-uri'];
+      $password = md5(sprintf('%s:%s:%s:%s:%s:%s', md5($auth1), $vars['nonce'], $vars['nc'], $vars['cnonce'], $vars['qop'], md5($auth2)));
       $sprintf  = 'username="%s",realm="%s",nonce="%s",cnonce="%s",nc="%s",qop="%s",digest-uri="%s",response="%s",charset="utf-8"';
       $response = sprintf($sprintf, $this->user, $vars['realm'], $vars['nonce'], $vars['cnonce'], $vars['nc'], $vars['qop'], $vars['digest-uri'], $password);
+      $response = base64_encode($response);
 
       // Send the response
-      $response = base64_encode($response);
       $this->send('<response xmlns="urn:ietf:params:xml:ns:xmpp-sasl">' . $response . '</response>');
     }
     else {
@@ -549,9 +555,11 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
    *
    */
   public function getRoster() {
-    $id = $this->getID();
+
+    $id    = $this->getID();
+    $query = '<query xmlns="jabber:iq:roster" />';
     $this->addIdHandler($id, 'roster_iq_handler');
-    $this->send('<iq xmlns="jabber:client" type="get" id="' . $id . '"><query xmlns="jabber:iq:roster" /></iq>');
+    $this->send('<iq xmlns="jabber:client" type="get" id="' . $id . '">' . $query . '</iq>');
   }
 
   /**
@@ -573,10 +581,10 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
 
       if ($item->name == 'item') {
 
-        $jid = $item->attrs['jid']; // REQUIRED
+        $jid = $item->attrs['jid']; // Required
 
         if (isset($item->attrs['name']) AND !empty($item->attrs['name'])) {
-          $name = $item->attrs['name']; // MAY
+          $name = $item->attrs['name']; // May
         }
         else {
           $name = '';
@@ -692,7 +700,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
         $attribs = array('xmlns' => $attribs);
       }
       foreach ($attribs as $attrib => $value) {
-        $output .= ' ' . $attrib . '="' . $value . '"';
+        $output .= sprintf(' %s="%s"', $attrib, $value);
       }
     }
 
@@ -717,6 +725,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     if ($password != null) {
       $password = '<password>' . $password . '</password>';
     }
+
     $room_service      = $room . '@' . $service . '/' . $this->user;
     $protocol_password = $this->x('http://jabber.org/protocol/muc', $password);
     $this->presence(null, null, $room_service, null, null, $protocol_password);
