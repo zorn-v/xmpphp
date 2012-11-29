@@ -163,7 +163,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
   }
 
   /**
-   * Turn encryption on/ff
+   * Turn encryption on/off
    *
    * @param boolean $useEncryption
    */
