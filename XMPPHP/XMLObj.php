@@ -104,7 +104,8 @@ class XMPPHP_XMLObj {
    */
   public function printObj($depth = 0) {
 
-    print str_repeat("\t", $depth) . $this->name . ' ' . $this->ns . ' ' . $this->data . "\n";
+    $tabs = str_repeat("\t", $depth);
+    printf("%s%s %s %s\n", $tabs, $this->name, $this->ns, $this->data);
 
     foreach ($this->subs as $sub) {
       $sub->printObj($depth + 1);
@@ -118,13 +119,13 @@ class XMPPHP_XMLObj {
    */
   public function toString($string = '') {
 
-    $string .= '<' . $this->name . ' xmlns="' . $this->ns . '" ';
+    $string .= sprintf('<%s xmlns="%s"', $this->name, $this->ns);
 
     foreach ($this->attrs as $key => $value) {
 
       if ($key != 'xmlns') {
         $value   = htmlspecialchars($value);
-        $string .= $key . '="' . $value . '" ';
+        $string .= sprintf(' %s="%s"', $key, $value);
       }
     }
 
@@ -135,7 +136,7 @@ class XMPPHP_XMLObj {
     }
 
     $body    = htmlspecialchars($this->data);
-    $string .= $body . '</' . $this->name . '>';
+    $string .= sprintf('%s</%s>', $body, $this->name);
 
     return $string;
   }
@@ -149,7 +150,11 @@ class XMPPHP_XMLObj {
   public function hasSub($name, $ns = null) {
 
     foreach ($this->subs as $sub) {
-      if (($name == '*' OR $sub->name == $name) AND ($ns == null OR $sub->ns == $ns)) {
+
+      $condition1 = ($name == '*' OR $sub->name == $name);
+      $condition2 = ($ns == null OR $sub->ns == $ns);
+
+      if ($condition1 AND $condition2) {
         return true;
       }
     }
@@ -175,17 +180,22 @@ class XMPPHP_XMLObj {
   }
 
   // Find and return one or more sub
-  public function getSubs($name = '*', $attrs = null, $ns = null, $stop_at_first = false) {
+  public function getSubs($name = '*', $attrs = null, $ns = null, $stop = false) {
 
     $subs = false;
 
     foreach ($this->subs as $sub) {
 
-      if (($name == '*' OR $sub->name == $name) AND ($ns == null OR $sub->ns == $ns) AND ($attrs == null OR $sub->hasAttrs($attrs))) {
+      $condition1 = ($name == '*' OR $sub->name == $name);
+      $condition2 = ($ns == null OR $sub->ns == $ns);
+      $condition3 = ($attrs == null OR $sub->hasAttrs($attrs));
+
+      if ($condition1 AND $condition2 AND $condition3) {
 
         $subs[] = $sub;
 
-        if ($stop_at_first) {
+        // Stop at first ocurrence
+        if ($stop) {
           return $subs;
         }
       }
