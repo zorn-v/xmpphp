@@ -40,7 +40,7 @@ Please contact Nathan Fritz for library exceptions if you would like to
 distribute XMPPHP with a non-GPL compatible license.
 
 NOTE
-====
+----
 More details in the origial README file - [README.orig][7]
 
 [1]: http://code.google.com/p/xmpphp
