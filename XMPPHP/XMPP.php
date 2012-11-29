@@ -218,7 +218,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $status   = htmlspecialchars($status);
     $type     = ($type != 'available') ? $type : '';
     $type     = ($show != 'unavailable') ? $type : $show;
-    $show     = ($show != 'available' && $show != null) ? '<show>' . $show . '</show>' : '';
+    $show     = ($show != 'available' AND $show != null) ? '<show>' . $show . '</show>' : '';
     $status   = ($status != null) ? '<status>' . $status . '</status>' : '';
     $priority = ($priority !== null) ? '<priority>' . $priority . '</priority>' : '';
     $payload  = ($payload) ? $payload : '';
@@ -322,14 +322,16 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     if ($xml->hasSub('x')) {
 
       $x = $xml->sub('x');
+
       if ($x->hasSub('status')) {
 
         switch ($x->sub('status')->attrs['code']) {
 
           case '201':
-            $id = $this->getId();
+            $id    = $this->getId();
+            $array = array('xmlns' => 'jabber:x:data', 'type' => 'submit');
             $this->addIdHandler($id, 'room_join_handler');
-            $this->sendIq($payload['from'], 'set', 'http://jabber.org/protocol/muc#owner', $this->x(array('xmlns' => 'jabber:x:data', 'type' => 'submit')), null, $id);
+            $this->sendIq($payload['from'], 'set', 'http://jabber.org/protocol/muc#owner', $this->x($array), null, $id);
             $this->log->log('Presence: sending default config for created room...',  XMPPHP_Log::LEVEL_DEBUG);
             break;
 
@@ -568,21 +570,28 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     foreach ($xmlroster->subs as $item) {
 
       $groups = array();
+
       if ($item->name == 'item') {
+
         $jid = $item->attrs['jid']; // REQUIRED
+
         if (isset($item->attrs['name']) AND !empty($item->attrs['name'])) {
           $name = $item->attrs['name']; // MAY
         }
         else {
           $name = '';
         }
+
         $subscription = $item->attrs['subscription'];
+
         foreach ($item->subs as $subitem) {
           if ($subitem->name == 'group') {
             $groups[] = $subitem->data;
           }
         }
-        $contacts[] = array($jid, $subscription, $name, $groups); //Store for action if no errors happen
+
+        //Store for action if no errors happen
+        $contacts[] = array($jid, $subscription, $name, $groups);
       }
       else {
         $status = 'error';
@@ -652,7 +661,9 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     foreach ($vcard->subs as $sub) {
 
       if ($sub->subs) {
+
         $vcard_array[$sub->name] = array();
+
         foreach ($sub->subs as $sub_child) {
           $vcard_array[$sub->name][$sub_child->name] = $sub_child->data;
         }
@@ -702,9 +713,12 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
    * @param string $password
    */
   public function joinRoom($room = null, $service = null, $password = null) {
+
     if ($password != null) {
       $password = '<password>' . $password . '</password>';
     }
-    $this->presence(null, null, $room . '@' . $service . '/' . $this->user, null, null, $this->x('http://jabber.org/protocol/muc', $password));
+    $room_service      = $room . '@' . $service . '/' . $this->user;
+    $protocol_password = $this->x('http://jabber.org/protocol/muc', $password);
+    $this->presence(null, null, $room_service, null, null, $protocol_password);
   }
 }
