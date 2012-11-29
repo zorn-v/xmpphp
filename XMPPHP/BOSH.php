@@ -170,7 +170,8 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
    */
   public function __buildBody($sub = null) {
 
-    $xml = new SimpleXMLElement('<body xmlns="http://jabber.org/protocol/httpbind" xmlns:xmpp="urn:xmpp:xbosh" />');
+    $xml = '<body xmlns="http://jabber.org/protocol/httpbind" xmlns:xmpp="urn:xmpp:xbosh" />';
+    $xml = new SimpleXMLElement($xml);
     $xml->addAttribute('content', 'text/xml; charset=utf-8');
     $xml->addAttribute('rid', $this->rid);
     $this->rid++;
@@ -183,11 +184,11 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
     if ($sub !== null) {
 
       // Ok, so simplexml is lame
-      $p   = dom_import_simplexml($xml);
-      $c   = dom_import_simplexml($sub);
-      $cn  = $p->ownerDocument->importNode($c, true);
-      $p->appendChild($cn);
-      $xml = simplexml_import_dom($p);
+      $parent  = dom_import_simplexml($xml);
+      $content = dom_import_simplexml($sub);
+      $child   = $parent->ownerDocument->importNode($content, true);
+      $parent->appendChild($child);
+      $xml     = simplexml_import_dom($parent);
     }
 
     return $xml;
@@ -302,7 +303,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
       $this->inactivity = $_SESSION['XMPPHP_BOSH']['inactivity'];
     }
 
-    $this->lat = time() - (isset($_SESSION['XMPPHP_BOSH']['lat'])) ? $_SESSION['XMPPHP_BOSH']['lat'] : 0;
+    $this->lat = (time() - (isset($_SESSION['XMPPHP_BOSH']['lat']))) ? $_SESSION['XMPPHP_BOSH']['lat'] : 0;
 
     if ($this->lat < $this->inactivity) {
 
@@ -339,6 +340,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
     $_SESSION['XMPPHP_BOSH']['lat']        = (string) time();
 
     if ($this->session == 'ON_FILE') {
+
       $session_file    = $this->getSessionFile();
       $session_file_fp = fopen($session_file, 'r');
       flock($session_file_fp, LOCK_EX);
