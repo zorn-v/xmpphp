@@ -37,7 +37,7 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'XMLObj.php';
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Log.php';
 
 /**
- * XMPPHP XML Stream
+ * XMPPHP XMLStream
  *
  * @package   XMPPHP
  * @author    Nathanael C. Fritz <JID: fritzy@netflint.net>
