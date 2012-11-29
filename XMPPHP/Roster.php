@@ -167,8 +167,34 @@ class XMPPHP_Roster {
 
       foreach ($this->roster_array[$jid]['presence'] as $resource => $presence) {
 
-        // Highest available priority or just highest priority
-        if ($presence['priority'] > $current['priority'] AND (($presence['show'] == 'chat' OR $presence['show'] == 'available') OR ($current['show'] != 'chat' OR $current['show'] != 'available'))) {
+        /**
+         * Highest available priority or just highest priority
+         *
+         * NOTE: This part may be confused, I don't like more than 80~90 line length if's
+         * What style do you like?
+         */
+
+        /** Style 1
+        $condition1 = ($presence['priority'] > $current['priority']);
+        $condition2 = ($presence['show'] == 'chat');
+        $condition3 = ($presence['show'] == 'available');
+        $condition4 = ($current['show'] != 'chat');
+        $condition5 = ($current['show'] != 'available');
+        if ($condition1 AND (($condition2 OR $condition3) OR ($condition4 OR $condition5))) { */
+
+        /** Style 2
+        $condition1 = ($presence['priority'] > $current['priority']);
+        $condition2 = ($presence['show'] == 'chat' OR $presence['show'] == 'available');
+        $condition3 = ($current['show'] != 'chat' OR $current['show'] != 'available');
+        if ($condition1 AND ($condition2 OR $condition3)) { */
+
+        // Style 3, same as 2 but using in_array() to avoid redundant $vars - my choice
+        $in_array   = array('chat', 'available');
+        $condition1 = ($presence['priority'] > $current['priority']);
+        $condition2 = (in_array($presence['show'], $in_array));
+        $condition3 = (!in_array($current['show'], $in_array));
+
+        if ($condition1 AND ($condition2 OR $condition3)) {
           $current             = $presence;
           $current['resource'] = $resource;
         }
@@ -177,6 +203,7 @@ class XMPPHP_Roster {
       return $current;
     }
   }
+
   /**
    * Get roster
    *
