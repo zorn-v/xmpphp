@@ -28,10 +28,10 @@
  */
 
 /** XMPPHP_XMLStream */
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'XMPP.php';
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'XMLStream.php';
 
 /**
- * XMPPHP Main Class
+ * XMPPHP BOSH
  *
  * @package   XMPPHP
  * @author    Nathanael C. Fritz <JID: fritzy@netflint.net>
