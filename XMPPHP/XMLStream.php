@@ -208,6 +208,7 @@ class XMPPHP_XMLStream {
    * @param boolean $is_server
    */
   public function __construct($host = null, $port = null, $printlog = false, $loglevel = null, $is_server = false) {
+
     $this->reconnect = (!$is_server);
     $this->is_server = $is_server;
     $this->host      = $host;
@@ -298,12 +299,14 @@ class XMPPHP_XMLStream {
     foreach ($ns_tags as $ns_tag) {
 
       list($l, $r) = explode('}', $ns_tag);
+
       if ($r != null) {
         $xpart = array(substr($l, 1), $r);
       }
       else {
         $xpart = array(null, $l);
       }
+
       $xpath_array[] = $xpart;
     }
 
@@ -333,11 +336,9 @@ class XMPPHP_XMLStream {
    */
   public function connect($timeout = 30, $persistent = false, $sendinit = true) {
 
-    $this->sent_disconnect = false;
-    $starttime = time();
-
     do {
 
+      $starttime             = time();
       $this->disconnected    = false;
       $this->sent_disconnect = false;
 
@@ -353,7 +354,7 @@ class XMPPHP_XMLStream {
       $this->log->log(sprintf($sprintf, $conntype, $this->host, $this->port));
 
       try {
-        $connection = sprintf('%s://%s:%s', $conntype, $this->host, $this->port);
+        $connection   = sprintf('%s://%s:%s', $conntype, $this->host, $this->port);
         $this->socket = stream_socket_client($connection, $errno, $errstr, $timeout, $conflag);
       } catch (Exception $e) {
         throw new XMPPHP_Exception($e->getMessage());
@@ -368,7 +369,9 @@ class XMPPHP_XMLStream {
     } while (!$this->socket AND ((time() - $starttime) < $timeout));
 
     if ($this->socket) {
+
       stream_set_blocking($this->socket, 1);
+
       if ($sendinit) {
         $this->send($this->stream_start);
       }
