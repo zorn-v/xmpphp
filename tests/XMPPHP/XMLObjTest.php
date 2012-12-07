@@ -26,6 +26,7 @@
  * @author    Michael Garvin <JID: gar@netflint.net>
  * @copyright 2008 Nathanael C. Fritz
  */
+ 
 
 /** XMPPHP_XMLObj */
 require_once CLASS_DIR . 'XMPPHP' . DIRECTORY_SEPARATOR . 'XMLObj.php';
