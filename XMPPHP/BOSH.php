@@ -1,4 +1,9 @@
 <?php
+
+namespace XMPPHP;
+
+use XMPPHP\XMPPHP_XMPP;
+
 /**
  * XMPPHP: The PHP XMPP Library
  * Copyright (C) 2008  Nathanael C. Fritz
@@ -27,7 +32,7 @@
  */
 
 /** XMPPHP_XMLStream */
-require_once dirname(__FILE__) . "/XMPP.php";
+#require_once dirname(__FILE__) . "/XMPP.php";
 
 /**
  * XMPPHP Main Class
