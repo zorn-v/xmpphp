@@ -1,4 +1,10 @@
 <?php
+
+namespace XMPPHP;
+
+use XMPPHP\XMPPHP_XMLStream;
+use XMPPHP\Roster;
+
 /**
  * XMPPHP: The PHP XMPP Library
  * Copyright (C) 2008  Nathanael C. Fritz
@@ -27,8 +33,8 @@
  */
 
 /** XMPPHP_XMLStream */
-require_once dirname(__FILE__) . "/XMLStream.php";
-require_once dirname(__FILE__) . "/Roster.php";
+#require_once dirname(__FILE__) . "/XMLStream.php";
+#require_once dirname(__FILE__) . "/Roster.php";
 
 /**
  * XMPPHP Main Class
