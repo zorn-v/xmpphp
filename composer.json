@@ -19,7 +19,7 @@
     
     "autoload": {
         "psr-0": {
-            "bandroidx\\XMPPHP": ""
+            "bandroidx\\xmpphp\\XMPPHP": ""
         }
     },
     "extra": {
