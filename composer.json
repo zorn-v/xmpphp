@@ -16,7 +16,7 @@
     "require": {
         "php": ">=5.3.2"
     },
-    "target-dir": "bandroidx/xmpphp",
+    
     "autoload": {
         "psr-0": {
             "bandroidx\\XMPPHP": ""
