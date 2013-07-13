@@ -1,10 +1,10 @@
 <?php
 
-namepace XMPPHP;
+namepace bandroidx\XMPPHP;
 
-use XMPPHP\XMPPHP_Exception;
-use XMPPHP\XMPPHP_XMLObj;
-use XMPPHP\XMPPHP_Log;
+use bandroidx\XMPPHP\XMPPHP_Exception;
+use bandroidx\XMPPHP\XMPPHP_XMLObj;
+use bandroidx\XMPPHP\XMPPHP_Log;
 
 /**
  * XMPPHP: The PHP XMPP Library
