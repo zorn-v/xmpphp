@@ -1,4 +1,11 @@
 <?php
+
+namepace XMPPHP;
+
+use XMPPHP\XMPPHP_Exception;
+use XMPPHP\XMPPHP_XMLObj;
+use XMPPHP\XMPPHP_Log;
+
 /**
  * XMPPHP: The PHP XMPP Library
  * Copyright (C) 2008  Nathanael C. Fritz
@@ -27,13 +34,13 @@
  */
 
 /** XMPPHP_Exception */
-require_once dirname(__FILE__) . '/Exception.php';
+#require_once dirname(__FILE__) . '/Exception.php';
 
 /** XMPPHP_XMLObj */
-require_once dirname(__FILE__) . '/XMLObj.php';
+#require_once dirname(__FILE__) . '/XMLObj.php';
 
 /** XMPPHP_Log */
-require_once dirname(__FILE__) . '/Log.php';
+#require_once dirname(__FILE__) . '/Log.php';
 
 /**
  * XMPPHP XML Stream
