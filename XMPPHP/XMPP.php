@@ -1,9 +1,9 @@
 <?php
 
-namespace bandroidx\XMPPHP;
+namespace Bandroidx\XMPPHP;
 
-use bandroidx\XMPPHP\XMPPHP_XMLStream;
-use bandroidx\XMPPHP\Roster;
+use Bandroidx\XMPPHP\XMPPHP_XMLStream;
+use Bandroidx\XMPPHP\Roster;
 
 /**
  * XMPPHP: The PHP XMPP Library
