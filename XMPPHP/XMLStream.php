@@ -135,7 +135,7 @@ class XMLStream {
 	 */
 	protected $until_payload = array();
 	/**
-	 * @var XMPPHP_Log
+	 * @var Log
 	 */
 	protected $log;
 	/**
@@ -178,7 +178,7 @@ class XMLStream {
 		$this->host = $host;
 		$this->port = $port;
 		$this->setupParser();
-		$this->log = new XMPPHP_Log($printlog, $loglevel);
+		$this->log = new Log($printlog, $loglevel);
 	}
 
 	/**
@@ -194,7 +194,7 @@ class XMLStream {
 	/**
 	 * Return the log instance
 	 *
-	 * @return XMPPHP_Log
+	 * @return Log
 	 */
 	public function getLog() {
 		return $this->log;
@@ -288,7 +288,7 @@ class XMLStream {
 	 * @param boolean $sendinit   Send XMPP starting sequence after connect
 	 *                            automatically
 	 *
-	 * @throws XMPPHP_Exception When the connection fails
+	 * @throws Exception When the connection fails
 	 */
 	public function connect($timeout = 30, $persistent = false, $sendinit = true) {
 		$this->sent_disconnect = false;
@@ -308,10 +308,10 @@ class XMLStream {
 			try {
 				$this->socket = @stream_socket_client("$conntype://{$this->host}:{$this->port}", $errno, $errstr, $timeout, $conflag);
 			} catch (Exception $e) {
-				throw new XMPPHP_Exception($e->getMessage());
+				throw new Exception($e->getMessage());
 			}
 			if(!$this->socket) {
-				$this->log->log("Could not connect.",  XMPPHP_Log::LEVEL_ERROR);
+				$this->log->log("Could not connect.",  Log::LEVEL_ERROR);
 				$this->disconnected = true;
 				# Take it easy for a few seconds
 				sleep(min($timeout, 5));
@@ -322,20 +322,20 @@ class XMLStream {
 			stream_set_blocking($this->socket, 1);
 			if($sendinit) $this->send($this->stream_start);
 		} else {
-			throw new XMPPHP_Exception("Could not connect before timeout.");
+			throw new Exception("Could not connect before timeout.");
 		}
 	}
 
 	/**
 	 * Reconnect XMPP Host
 	 *
-	 * @throws XMPPHP_Exception When the connection fails
+	 * @throws Exception When the connection fails
 	 * @uses   $reconnectTimeout
 	 * @see    setReconnectTimeout()
 	 */
 	public function doReconnect() {
 		if(!$this->is_server) {
-			$this->log->log("Reconnecting ($this->reconnectTimeout)...",  XMPPHP_Log::LEVEL_WARNING);
+			$this->log->log("Reconnecting ($this->reconnectTimeout)...",  Log::LEVEL_WARNING);
 			$this->connect($this->reconnectTimeout, false, false);
 			$this->reset();
 			$this->event('reconnect');
@@ -350,7 +350,7 @@ class XMLStream {
 	 * Disconnect from XMPP Host
 	 */
 	public function disconnect() {
-		$this->log->log("Disconnecting...",  XMPPHP_Log::LEVEL_VERBOSE);
+		$this->log->log("Disconnecting...",  Log::LEVEL_VERBOSE);
 		if(false == (bool) $this->socket) {
 			return;
 		}
@@ -441,7 +441,7 @@ class XMLStream {
 			}
 			$updated = @stream_select($read, $write, $except, $secs, $usecs);
 			if ($updated === false) {
-				$this->log->log("Error on stream_select()",  XMPPHP_Log::LEVEL_VERBOSE);				
+				$this->log->log("Error on stream_select()",  Log::LEVEL_VERBOSE);
 				if ($this->reconnect) {
 					$this->doReconnect();
 				} else {
@@ -470,7 +470,7 @@ class XMLStream {
 							return false;
 						}
 					}
-					$this->log->log("RECV: $part",  XMPPHP_Log::LEVEL_VERBOSE);
+					$this->log->log("RECV: $part",  Log::LEVEL_VERBOSE);
 					$buff .= $part;
 				} while (!$this->bufferComplete($buff));
 
@@ -602,7 +602,7 @@ class XMLStream {
 			$ns = $this->ns_map[$name[0]];
 			$name = $name[1];
 		}
-		$obj = new XMPPHP_XMLObj($name, $ns, $attr);
+		$obj = new XMLObj($name, $ns, $attr);
 		if($this->xml_depth > 1) {
 			$this->xmlobj[$this->xml_depth - 1]->subs[] = $obj;
 		}
@@ -618,7 +618,7 @@ class XMLStream {
 	 * @param string   $name
 	 */
 	public function endXML($parser, $name) {
-		#$this->log->log("Ending $name",  XMPPHP_Log::LEVEL_DEBUG);
+		#$this->log->log("Ending $name",  Log::LEVEL_DEBUG);
 		#print "$name\n";
 		if($this->been_reset) {
 			$this->been_reset = false;
@@ -643,7 +643,7 @@ class XMLStream {
 						}
 						if ($searchxml !== null) {
 							if($handler[2] === null) $handler[2] = $this;
-							$this->log->log("Calling {$handler[1]}",  XMPPHP_Log::LEVEL_DEBUG);
+							$this->log->log("Calling {$handler[1]}",  Log::LEVEL_DEBUG);
 							$handler[2]->$handler[1]($this->xmlobj[2]);
 						}
 					}
@@ -657,7 +657,7 @@ class XMLStream {
 				}
 				if($searchxml !== null and $searchxml->name == $handler[0] and ($searchxml->ns == $handler[1] or (!$handler[1] and $searchxml->ns == $this->default_ns))) {
 					if($handler[3] === null) $handler[3] = $this;
-					$this->log->log("Calling {$handler[2]}",  XMPPHP_Log::LEVEL_DEBUG);
+					$this->log->log("Calling {$handler[2]}",  Log::LEVEL_DEBUG);
 					$handler[3]->$handler[2]($this->xmlobj[2]);
 				}
 			}
@@ -672,7 +672,7 @@ class XMLStream {
 			}
 			if(is_array($this->xmlobj)) {
 				$this->xmlobj = array_slice($this->xmlobj, 0, 1);
-				if(isset($this->xmlobj[0]) && $this->xmlobj[0] instanceof XMPPHP_XMLObj) {
+				if(isset($this->xmlobj[0]) && $this->xmlobj[0] instanceof XMLObj) {
 					$this->xmlobj[0]->subs = null;
 				}
 			}
@@ -714,7 +714,7 @@ class XMLStream {
 	 * @param string $payload
 	 */
 	public function event($name, $payload = null) {
-		$this->log->log("EVENT: $name",  XMPPHP_Log::LEVEL_DEBUG);
+		$this->log->log("EVENT: $name",  Log::LEVEL_DEBUG);
 		foreach($this->eventhandlers as $handler) {
 			if($name == $handler[0]) {
 				if($handler[2] === null) {
@@ -750,7 +750,7 @@ class XMLStream {
 				return false;
 			}
 		}
-		$this->log->log("RECV: $buff",  XMPPHP_Log::LEVEL_VERBOSE);
+		$this->log->log("RECV: $buff",  Log::LEVEL_VERBOSE);
 		xml_parse($this->parser, $buff, false);
 	}
 
@@ -785,20 +785,20 @@ class XMLStream {
 			# TODO: retry send here
 			return false;
 		} elseif ($select > 0) {
-			$this->log->log("Socket is ready; send it.", XMPPHP_Log::LEVEL_VERBOSE);
+			$this->log->log("Socket is ready; send it.", Log::LEVEL_VERBOSE);
 		} else {
-			$this->log->log("Socket is not ready; break.", XMPPHP_Log::LEVEL_ERROR);
+			$this->log->log("Socket is not ready; break.", Log::LEVEL_ERROR);
 			return false;
 		}
 		
 		$sentbytes = @fwrite($this->socket, $msg);
-		$this->log->log("SENT: " . mb_substr($msg, 0, $sentbytes, '8bit'), XMPPHP_Log::LEVEL_VERBOSE);
+		$this->log->log("SENT: " . mb_substr($msg, 0, $sentbytes, '8bit'), Log::LEVEL_VERBOSE);
 		if($sentbytes === FALSE) {
-			$this->log->log("ERROR sending message; reconnecting.", XMPPHP_Log::LEVEL_ERROR);
+			$this->log->log("ERROR sending message; reconnecting.", Log::LEVEL_ERROR);
 			$this->doReconnect();
 			return false;
 		}
-		$this->log->log("Successfully sent $sentbytes bytes.", XMPPHP_Log::LEVEL_VERBOSE);
+		$this->log->log("Successfully sent $sentbytes bytes.", Log::LEVEL_VERBOSE);
 		return $sentbytes;
 	}
 

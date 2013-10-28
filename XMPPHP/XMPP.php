@@ -234,7 +234,7 @@ class XMPP extends XMLStream {
 		$payload['from'] = $xml->attrs['from'];
 		$payload['body'] = is_object($body) ? $body->data : FALSE; // $xml->sub('body')->data;
 		$payload['xml'] = $xml;
-		$this->log->log("Message: {$payload['body']}", XMPPHP_Log::LEVEL_DEBUG);
+		$this->log->log("Message: {$payload['body']}", Log::LEVEL_DEBUG);
 		$this->event('message', $payload);
 	}
 
@@ -253,7 +253,7 @@ class XMPP extends XMLStream {
 		if($this->track_presence) {
 			$this->roster->setPresence($payload['from'], $payload['priority'], $payload['show'], $payload['status']);
 		}
-		$this->log->log("Presence: {$payload['from']} [{$payload['show']}] {$payload['status']}",  XMPPHP_Log::LEVEL_DEBUG);
+		$this->log->log("Presence: {$payload['from']} [{$payload['show']}] {$payload['status']}",  Log::LEVEL_DEBUG);
 		if(array_key_exists('type', $xml->attrs) and $xml->attrs['type'] == 'subscribe') {
 			if($this->auto_subscribe) {
 				$this->send("<presence type='subscribed' to='{$xml->attrs['from']}' from='{$this->fulljid}' />");
@@ -306,10 +306,10 @@ class XMPP extends XMLStream {
 	 * @param string $xml
 	 */
 	protected function sasl_failure_handler($xml) {
-		$this->log->log("Auth failed!",  XMPPHP_Log::LEVEL_ERROR);
+		$this->log->log("Auth failed!",  Log::LEVEL_ERROR);
 		$this->disconnect();
 		
-		throw new XMPPHP_Exception('Auth failed!');
+		throw new Exception('Auth failed!');
 	}
 
 	/**

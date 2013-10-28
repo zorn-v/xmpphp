@@ -143,7 +143,7 @@ class BOSH extends XMPP {
 					$children = $xml->xpath('child::node()');
 					foreach ($children as $child) {
 						$buff = $child->asXML();
-						$this->log->log("RECV: $buff",  XMPPHP_Log::LEVEL_VERBOSE);
+						$this->log->log("RECV: $buff",  Log::LEVEL_VERBOSE);
 						xml_parse($this->parser, $buff, false);
 					}
 				}
@@ -151,7 +151,7 @@ class BOSH extends XMPP {
 		}
 
 		public function send($msg) {
-			$this->log->log("SEND: $msg",  XMPPHP_Log::LEVEL_VERBOSE);
+			$this->log->log("SEND: $msg",  Log::LEVEL_VERBOSE);
 			$msg = new SimpleXMLElement($msg);
 			#$msg->addAttribute('xmlns', 'jabber:client');
 			$this->__sendBody($this->__buildBody($msg), true);
