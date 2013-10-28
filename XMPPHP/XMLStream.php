@@ -1,6 +1,6 @@
 <?php
 
-namespace Tyrola\XMPPHP;
+namespace tyrola\xmpphp;
 
 /**
  * XMPPHP: The PHP XMPP Library
@@ -26,6 +26,7 @@ namespace Tyrola\XMPPHP;
  * @author	 Nathanael C. Fritz <JID: fritzy@netflint.net>
  * @author	 Stephan Wentz <JID: stephan@jabber.wentz.it>
  * @author	 Michael Garvin <JID: gar@netflint.net>
+ * @author	 Alexabder Birkner alex.birkner@©mail.com
  * @copyright  2008 Nathanael C. Fritz
  */
 

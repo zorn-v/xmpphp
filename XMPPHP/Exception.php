@@ -1,6 +1,6 @@
 <?php
 
-namespace Tyrola\XMPPHP;
+namespace tyrola\xmpphp;
 
 use \Exception as ObjectException;
 
