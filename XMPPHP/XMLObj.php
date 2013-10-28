@@ -1,6 +1,6 @@
 <?php
 
-namespace tyrola\xmpphp;
+namespace xmpphp;
 
 /**
  * XMPPHP: The PHP XMPP Library
