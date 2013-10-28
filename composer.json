@@ -1,5 +1,5 @@
 {
-    "name": "tyrola/xmpphp",
+    "name": "Tyrola/XMPPHP",
     "description": "Jabber Library For Sending Jabber Messages",
     "type": "library",
     "keywords": ["jabber", "xmpphp", "xmpp"],
@@ -21,7 +21,7 @@
     
     "autoload": {
         "psr-0": {
-            "Tyrola\\XMPPHP": "XMPPHP/"
+            "Tyrola\\XMPPHP": "XMPPHP"
         }
     },
     "extra": {
