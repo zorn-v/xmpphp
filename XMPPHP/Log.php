@@ -1,6 +1,6 @@
 <?php
 
-namespace Bandroidx\XMPPHP;
+namespace Tyrola\XMPPHP;
 
 /**
  * XMPPHP: The PHP XMPP Library
@@ -39,7 +39,7 @@ namespace Bandroidx\XMPPHP;
  * @copyright  2008 Nathanael C. Fritz
  * @version	$Id$
  */
-class XMPPHP_Log {
+class Log {
 	
 	const LEVEL_ERROR   = 0;
 	const LEVEL_WARNING = 1;

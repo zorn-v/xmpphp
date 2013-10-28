@@ -1,8 +1,6 @@
 <?php
 
-namespace Bandroidx\XMPPHP;
-
-use Bandroidx\XMPPHP\XMPPHP_XMPP;
+namespace Tyrola\XMPPHP;
 
 /**
  * XMPPHP: The PHP XMPP Library
@@ -45,7 +43,7 @@ use Bandroidx\XMPPHP\XMPPHP_XMPP;
  * @copyright  2008 Nathanael C. Fritz
  * @version	$Id$
  */
-class XMPPHP_BOSH extends XMPPHP_XMPP {
+class BOSH extends XMPP {
 
 		protected $rid;
 		protected $sid;

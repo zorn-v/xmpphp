@@ -1,16 +1,18 @@
 {
-    "name": "bandroidx/xmpphp",
-    "description": "Jabber Library For Sending Jabber Messages (including Gtalk)",
+    "name": "tyrola/xmpphp",
+    "description": "Jabber Library For Sending Jabber Messages",
     "type": "library",
-    "keywords": ["jabber", "xmpphp", "gtalk"],
-    "homepage": "https://github.com/bandroidx/xmpphp",
+    "keywords": ["jabber", "xmpphp", "xmpp"],
+    "homepage": "https://github.com/BirknerAlex/xmpphp",
     "license": "GPL-2.0+",
     "authors": [
         {
             "name": "Nathan Fritz",
             "email": "fritzy@netflint.net",
             "name": "bandroidx",
-            "email": "bandroidx@gmail.com"
+            "email": "bandroidx@gmail.com",
+            "name": "BirknerAlex",
+            "email": "alex.birkner@gmail.com"
         }
     ],
     "require": {
@@ -19,7 +21,7 @@
     
     "autoload": {
         "psr-0": {
-            "Bandroidx\\XMPPHP": ""
+            "Tyrola\\XMPPHP": ""
         }
     },
     "extra": {

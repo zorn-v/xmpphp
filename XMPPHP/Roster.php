@@ -1,6 +1,6 @@
 <?php
 
-namespace Bandroidx\XMPPHP;
+namespace Tyrola\XMPPHP;
 
 /**
  * XMPPHP: The PHP XMPP Library

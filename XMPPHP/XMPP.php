@@ -1,9 +1,6 @@
 <?php
 
-namespace Bandroidx\XMPPHP;
-
-use Bandroidx\XMPPHP\XMPPHP_XMLStream;
-use Bandroidx\XMPPHP\Roster;
+namespace Tyrola\XMPPHP;
 
 /**
  * XMPPHP: The PHP XMPP Library
@@ -29,12 +26,9 @@ use Bandroidx\XMPPHP\Roster;
  * @author	 Nathanael C. Fritz <JID: fritzy@netflint.net>
  * @author	 Stephan Wentz <JID: stephan@jabber.wentz.it>
  * @author	 Michael Garvin <JID: gar@netflint.net>
+ * @author	 Alexabder Birkner
  * @copyright  2008 Nathanael C. Fritz
  */
-
-/** XMPPHP_XMLStream */
-#require_once dirname(__FILE__) . "/XMLStream.php";
-#require_once dirname(__FILE__) . "/Roster.php";
 
 /**
  * XMPPHP Main Class
@@ -44,10 +38,11 @@ use Bandroidx\XMPPHP\Roster;
  * @author	 Nathanael C. Fritz <JID: fritzy@netflint.net>
  * @author	 Stephan Wentz <JID: stephan@jabber.wentz.it>
  * @author	 Michael Garvin <JID: gar@netflint.net>
+ * @author	 Alexabder Birkner
  * @copyright  2008 Nathanael C. Fritz
  * @version	$Id$
  */
-class XMPPHP_XMPP extends XMPPHP_XMLStream {
+class XMPP extends XMLStream {
 	/**
 	 * @var string
 	 */

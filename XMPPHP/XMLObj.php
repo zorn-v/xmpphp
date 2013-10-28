@@ -1,6 +1,6 @@
 <?php 
 
-namespace Bandroidx\XMPPHP;
+namespace Tyrola\XMPPHP;
 
 /**
  * XMPPHP: The PHP XMPP Library
@@ -40,7 +40,7 @@ namespace Bandroidx\XMPPHP;
  * @copyright  2008 Nathanael C. Fritz
  * @version	$Id$
  */
-class XMPPHP_XMLObj {
+class XMLObj {
 	/**
 	 * Tag name
 	 *

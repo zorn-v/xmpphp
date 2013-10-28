@@ -1,6 +1,8 @@
 <?php
 
-namespace Bandroidx\XMPPHP;
+namespace Tyrola\XMPPHP;
+
+use \Exception as ObjectException;
 
 /**
  * XMPPHP: The PHP XMPP Library
@@ -40,5 +42,5 @@ namespace Bandroidx\XMPPHP;
  * @copyright  2008 Nathanael C. Fritz
  * @version    $Id$
  */
-class XMPPHP_Exception extends Exception {
+class Exception extends ObjectException {
 }

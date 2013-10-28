@@ -1,10 +1,6 @@
 <?php
 
-namepace Bandroidx\XMPPHP;
-
-use Bandroidx\XMPPHP\XMPPHP_Exception;
-use Bandroidx\XMPPHP\XMPPHP_XMLObj;
-use Bandroidx\XMPPHP\XMPPHP_Log;
+namespace Tyrola\XMPPHP;
 
 /**
  * XMPPHP: The PHP XMPP Library
@@ -33,15 +29,6 @@ use Bandroidx\XMPPHP\XMPPHP_Log;
  * @copyright  2008 Nathanael C. Fritz
  */
 
-/** XMPPHP_Exception */
-#require_once dirname(__FILE__) . '/Exception.php';
-
-/** XMPPHP_XMLObj */
-#require_once dirname(__FILE__) . '/XMLObj.php';
-
-/** XMPPHP_Log */
-#require_once dirname(__FILE__) . '/Log.php';
-
 /**
  * XMPPHP XML Stream
  * 
@@ -53,7 +40,7 @@ use Bandroidx\XMPPHP\XMPPHP_Log;
  * @copyright  2008 Nathanael C. Fritz
  * @version	$Id$
  */
-class XMPPHP_XMLStream {
+class XMLStream {
 	/**
 	 * @var resource
 	 */
