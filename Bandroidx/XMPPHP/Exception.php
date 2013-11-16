@@ -40,5 +40,5 @@ namespace Bandroidx\XMPPHP;
  * @copyright  2008 Nathanael C. Fritz
  * @version    $Id$
  */
-class Exception extends Exception {
+class Exception extends \Exception {
 }
