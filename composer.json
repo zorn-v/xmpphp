@@ -3,7 +3,6 @@
     "description": "Jabber Library For Sending Jabber Messages (including Gtalk)",
     "type": "library",
     "keywords": ["jabber", "xmpphp", "gtalk"],
-    "homepage": "https://github.com/bandroidx/xmpphp",
     "license": "GPL-2.0+",
     "authors": [
         {
