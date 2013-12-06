@@ -1,6 +1,6 @@
 <?php
 
-namepace Bandroidx\XMPPHP;
+namespace Bandroidx\XMPPHP;
 
 use Bandroidx\XMPPHP\XMPPHP_Exception;
 use Bandroidx\XMPPHP\XMPPHP_XMLObj;
