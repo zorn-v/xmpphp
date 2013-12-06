@@ -176,6 +176,12 @@ class XMPPHP_XMLStream {
 	protected $reconnectTimeout = 30;
 
 	/**
+	 * counter for number of messages sent
+	 * @var integer
+	 */
+	protected $sendCount = 0;
+	
+	/**
 	 * Constructor
 	 *
 	 * @param string  $host
@@ -811,6 +817,9 @@ class XMPPHP_XMLStream {
 			return false;
 		}
 		$this->log->log("Successfully sent $sentbytes bytes.", XMPPHP_Log::LEVEL_VERBOSE);
+		
+		$this->sendCount++;
+		
 		return $sentbytes;
 	}
 
@@ -852,4 +861,9 @@ class XMPPHP_XMLStream {
 		$updated = @stream_select($read, $write, $except, 0);
 		return (($updated !== false) && ($updated > 0));
 	}
+
+	public function getSendCount() { 
+		return $this->sendCount;
+	}
+
 }
