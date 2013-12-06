@@ -3,16 +3,13 @@ About
 XMPPHP is an elegant PHP library for XMPP (aka Jabber, Google Talk, etc).
 
 Homepage: http://code.google.com/p/xmpphp
-This fork: http://github.com/cweiske/xmpphp/
-Chatroom: xmpphp@conference.psi-im.org (XMPP MUC)
-PEAR package: http://pearhub.org/projects/cwXMPPHP/
-
 Author: Nathan Fritz, jabber id: fritzy [at] netflint.net
 Co-Author: Stephan Wentz, jabber id: stephan [at] wentz.it
-Maintainer of this fork: Christian Weiske <cweiske@cweiske.de>
 
-If you have any questions (no matter how dumb), please send me an IM.  I enjoy
-helping people with my code.
+This fork: http://github.com/switchsystems/xmpphp/
+Maintainer of this fork: Kris Sum (support@switchsystems co.uk)
+
+This fork is primarily to add in extra helper classes for extra xmpp features.
 
 
 Requirements
@@ -22,40 +19,13 @@ Requirements
 
 History
 ================================================================================
-Carlo Zottmann handed me maintenance of Class.Jabber.PHP years and years ago
-(2003?).  While I did fix some bugs, I never did much with it.  I promised many
-people that it would return as a PHP5 rewrite.  That day has finally come.
-
-This code is based on my experience with Class.Jabber.PHP, but more closely
-related to my Python library, SleekXMPP (http://code.google.com/p/sleekxmpp).
-
-Modified by bandroidx to add php 5.3 namespace support, and usable in composer.
+Fork of bandroidx's release which added composer support
 
 Documentation
 ================================================================================
-For now, look at the examples.  In the near future, I'll have better
-documentation on the website.
-
-Installation
-================================================================================
-Either get the code from github, the last release from google code
-or install the PEAR package from pearhub.org:
-$ pear channel-discover pearhub.org
-$ pear install pearhub/cwXMPPHP
-
-The code on google code is not being actively maintained anymore, so
-don't expect current releases there.
-
-
-TODO
-================================================================================
-* Documentation
-* MUC Support
+For now, look at the examples or parent repos.
 
 License Exception
 ===============================================================================
 Please contact Nathan Fritz for library exceptions if you would like to
 distribute XMPPHP with a non-GPL compatible license.
-
-Also, if you would like to distribute XMPPHP as part of a commercial package,
-I sell commercial licenses.

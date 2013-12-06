@@ -3,7 +3,7 @@
     "description": "Jabber Library For Sending Jabber Messages (including Gtalk)",
     "type": "library",
     "keywords": ["jabber", "xmpphp", "gtalk"],
-    "homepage": "https://github.com/bandroidx/xmpphp",
+    "homepage": "https://github.com/SwitchSystems/xmpphp",
     "license": "GPL-2.0+",
     "authors": [
         {
@@ -11,6 +11,8 @@
             "email": "fritzy@netflint.net",
             "name": "bandroidx",
             "email": "bandroidx@gmail.com"
+            "name": "kris sum",
+            "email": "support@switchsystems.co.uk"
         }
     ],
     "require": {
