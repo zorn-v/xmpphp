@@ -574,6 +574,8 @@ class XMPPHP_XMLStream {
 			unset($this->until[$event_key]);
 		} else {
 			$payload = array();
+			unset($this->until_count[$event_key]);
+			unset($this->until[$event_key]);
 		}
 
 		return $payload;
