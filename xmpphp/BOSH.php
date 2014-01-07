@@ -75,7 +75,7 @@ class BOSH extends XMPP {
 				$buff = "<stream:stream xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams'>";
 				xml_parse($this->parser, $buff, false);
 				$response = $this->__sendBody($body);
-				$rxml = new SimpleXMLElement($response);
+				$rxml = new \SimpleXMLElement($response);
 				$this->sid = $rxml['sid'];
 
 			} else {
@@ -107,7 +107,7 @@ class BOSH extends XMPP {
 		}
 
 		public function __buildBody($sub=null) {
-			$xml = new SimpleXMLElement("<body xmlns='http://jabber.org/protocol/httpbind' xmlns:xmpp='urn:xmpp:xbosh' />");
+			$xml = new \SimpleXMLElement("<body xmlns='http://jabber.org/protocol/httpbind' xmlns:xmpp='urn:xmpp:xbosh' />");
 			$xml->addAttribute('content', 'text/xml; charset=utf-8');
 			$xml->addAttribute('rid', $this->rid);
 			$this->rid += 1;
@@ -139,7 +139,7 @@ class BOSH extends XMPP {
 				$buffer = $this->http_buffer[$idx];
 				unset($this->http_buffer[$idx]);
 				if($buffer) {
-					$xml = new SimpleXMLElement($buffer);
+					$xml = new \SimpleXMLElement($buffer);
 					$children = $xml->xpath('child::node()');
 					foreach ($children as $child) {
 						$buff = $child->asXML();
@@ -152,7 +152,7 @@ class BOSH extends XMPP {
 
 		public function send($msg) {
 			$this->log->log("SEND: $msg",  Log::LEVEL_VERBOSE);
-			$msg = new SimpleXMLElement($msg);
+			$msg = new \SimpleXMLElement($msg);
 			#$msg->addAttribute('xmlns', 'jabber:client');
 			$this->__sendBody($this->__buildBody($msg), true);
 			#$this->__parseBuffer();
