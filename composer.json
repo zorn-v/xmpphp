@@ -1,5 +1,5 @@
 {
-    "name": "bandroidx/xmpphp",
+    "name": "linspb/xmpphp",
     "description": "Jabber Library For Sending Jabber Messages (including Gtalk)",
     "type": "library",
     "keywords": ["jabber", "xmpphp", "gtalk"],
@@ -10,7 +10,9 @@
             "name": "Nathan Fritz",
             "email": "fritzy@netflint.net",
             "name": "bandroidx",
-            "email": "bandroidx@gmail.com"
+            "email": "bandroidx@gmail.com",
+            "name": "linspb",
+            "email": "linspb@gmail.com"
         }
     ],
     "require": {
