@@ -1,6 +1,6 @@
 <?php
 
-namespace BirknerAlex\XMPPHP;
+namespace Dromsal\XMPPHP;
 
 use \Exception as ObjectException;
 
@@ -29,6 +29,7 @@ use \Exception as ObjectException;
  * @author     Stephan Wentz <JID: stephan@jabber.wentz.it>
  * @author     Michael Garvin <JID: gar@netflint.net>
  * @author     Alexander Birkner (https://github.com/BirknerAlex)
+ * @author     Thomas Bähr (https://github.com/TheBelgarion)
  * @copyright  2008 Nathanael C. Fritz
  */
 

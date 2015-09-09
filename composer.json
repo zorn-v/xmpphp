@@ -1,9 +1,9 @@
 {
-    "name": "tyrola/xmpphp",
+    "name": "dromsal/xmpphp",
     "description": "Jabber Library For Sending Jabber Messages",
     "type": "library",
     "keywords": ["jabber", "xmpphp", "xmpp"],
-    "homepage": "https://github.com/BirknerAlex/XMPPHP",
+    "homepage": "https://github.com/TheBelgarion/XMPPHP",
     "license": "GPL-2.0+",
     "authors": [
         {
@@ -13,6 +13,8 @@
             "email": "bandroidx@gmail.com",
             "name": "BirknerAlex",
             "email": "alex.birkner@gmail.com"
+            "name": "Baehr Thomas",
+            "email": "thomas.baehr.code@gmail.com"
         }
     ],
     "require": {
@@ -20,12 +22,12 @@
     },
     "autoload": {
         "psr-0": {
-            "BirknerAlex\\XMPPHP": "src/"
+            "Dromsal\\XMPPHP": "src/"
         }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.0-dev"
+            "dev-master": "1.0-dev"
         }
     }
 }
