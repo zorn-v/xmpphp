@@ -306,7 +306,16 @@ class XMLStream {
 			if($this->use_ssl) $conntype = 'ssl';
 			$this->log->log("Connecting to $conntype://{$this->host}:{$this->port}");
 			try {
-				$this->socket = @stream_socket_client("$conntype://{$this->host}:{$this->port}", $errno, $errstr, $timeout, $conflag);
+				$options=array(
+					'ssl' => array(
+						'verify_peer' => false,
+						'verify_peer_name' => false,
+						'allow_self_signed' => true,
+					)
+				);
+				$streamContext = stream_context_create($options);
+				$this->socket = @stream_socket_client("$conntype://{$this->host}:{$this->port}", $errno, $errstr, $timeout, $conflag, $streamContext);
+				#$this->socket = @stream_socket_client("$conntype://{$this->host}:{$this->port}", $errno, $errstr, $timeout, $conflag);
 			} catch (Exception $e) {
 				throw new Exception($e->getMessage());
 			}
