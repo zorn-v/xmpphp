@@ -1,0 +1,6 @@
+{
+  "require": {
+    // ...
+    "tyrola/xmpphp": "2.0-dev"
+  }
+}
