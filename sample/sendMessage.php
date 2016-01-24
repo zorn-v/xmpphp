@@ -2,7 +2,7 @@
 
 /**
  * Created by IntelliJ IDEA.
- * @author Alexabder Birkner alex.birkner@©mail.com
+ * @author Alexander Birkner alex.birkner@gmail.com
  */
 
 require_once __DIR__.'/../vendor/autoload.php';
