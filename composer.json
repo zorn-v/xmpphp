@@ -1,9 +1,9 @@
 {
-    "name": "tyrola/xmpphp",
+    "name": "naugrimm/xmpphp",
     "description": "Jabber Library For Sending Jabber Messages",
     "type": "library",
     "keywords": ["jabber", "xmpphp", "xmpp"],
-    "homepage": "https://github.com/BirknerAlex/XMPPHP",
+    "homepage": "https://github.com/Naugrimm/XMPPHP",
     "license": "GPL-2.0+",
     "authors": [
         {
@@ -12,7 +12,9 @@
             "name": "bandroidx",
             "email": "bandroidx@gmail.com",
             "name": "BirknerAlex",
-            "email": "alex.birkner@gmail.com"
+            "email": "alex.birkner@gmail.com",
+            "name": "Erik Anders",
+            "email": "erik.anders@securepoint.de"
         }
     ],
     "require": {
