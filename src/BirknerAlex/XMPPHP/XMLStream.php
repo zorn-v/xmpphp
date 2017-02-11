@@ -121,11 +121,11 @@ class XMLStream {
 	/**
 	 * @var string
 	 */
-	protected $until = '';
+	protected $until = [];
 	/**
 	 * @var string
 	 */
-	protected $until_count = '';
+	protected $until_count = [];
 	/**
 	 * @var array
 	 */
