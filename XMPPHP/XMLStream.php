@@ -805,7 +805,7 @@ class XMLStream {
                 }
 
                 $this->log->log('Calling ' . $handler[1],  Log::LEVEL_DEBUG);
-                $handler[2]->$handler[1]($this->xmlobj[2]);
+                $handler[2]->{$handler[1]}($this->xmlobj[2]);
               }
             }
           }
@@ -836,7 +836,7 @@ class XMLStream {
           }
 
           $this->log->log('Calling ' . $handler[2],  Log::LEVEL_DEBUG);
-          $handler[3]->$handler[2]($this->xmlobj[2]);
+          $handler[3]->{$handler[2]}($this->xmlobj[2]);
         }
       }
 
@@ -851,7 +851,7 @@ class XMLStream {
             $handler[1] = $this;
           }
 
-          $handler[1]->$handler[0]($this->xmlobj[2]);
+          $handler[1]->{$handler[0]}($this->xmlobj[2]);
           // The handlers id are only used once
           unset($this->idhandlers[$id]);
           break;
@@ -922,7 +922,7 @@ class XMLStream {
           $handler[2] = $this;
         }
 
-        $handler[2]->$handler[1]($payload);
+        $handler[2]->{$handler[1]}($payload);
       }
     }
 
