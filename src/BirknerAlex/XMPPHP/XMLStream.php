@@ -648,7 +648,7 @@ class XMLStream {
 						if ($searchxml !== null) {
 							if($handler[2] === null) $handler[2] = $this;
 							$this->log->log("Calling {$handler[1]}",  Log::LEVEL_DEBUG);
-							$handler[2]->$handler[1]($this->xmlobj[2]);
+							$handler[2]->{$handler[1]}($this->xmlobj[2]);
 						}
 					}
 				}
@@ -662,13 +662,13 @@ class XMLStream {
 				if($searchxml !== null and $searchxml->name == $handler[0] and ($searchxml->ns == $handler[1] or (!$handler[1] and $searchxml->ns == $this->default_ns))) {
 					if($handler[3] === null) $handler[3] = $this;
 					$this->log->log("Calling {$handler[2]}",  Log::LEVEL_DEBUG);
-					$handler[3]->$handler[2]($this->xmlobj[2]);
+					$handler[3]->{$handler[2]}($this->xmlobj[2]);
 				}
 			}
 			foreach($this->idhandlers as $id => $handler) {
 				if(array_key_exists('id', $this->xmlobj[2]->attrs) and $this->xmlobj[2]->attrs['id'] == $id) {
 					if($handler[1] === null) $handler[1] = $this;
-					$handler[1]->$handler[0]($this->xmlobj[2]);
+					$handler[1]->{$handler[0]}($this->xmlobj[2]);
 					#id handlers are only used once
 					unset($this->idhandlers[$id]);
 					break;
@@ -724,7 +724,7 @@ class XMLStream {
 				if($handler[2] === null) {
 					$handler[2] = $this;
 				}
-				$handler[2]->$handler[1]($payload);
+				$handler[2]->{$handler[1]}($payload);
 			}
 		}
 
