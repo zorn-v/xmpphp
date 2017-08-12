@@ -562,7 +562,7 @@ class XMLStream {
             $time_past = $endtime - $starttime;
             $remaining = $remaining - $time_past;
 
-          } while ((is_null($maximum) OR $remaining > 0) AND !$this->bufferComplete($buff));
+          } while ((is_null($maximum) OR $remaining > 0) AND !$this->bufferComplete($buff) AND !feof($this->socket));
         }
 
         if (trim($buff) != '') {
