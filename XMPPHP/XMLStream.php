@@ -350,8 +350,15 @@ class XMLStream {
       $this->log->log(sprintf($sprintf, $conntype, $this->host, $this->port));
 
       try {
-        $connection   = sprintf('%s://%s:%s', $conntype, $this->host, $this->port);
-        $this->socket = stream_socket_client($connection, $errno, $errstr, $timeout, $conflag);
+        $options=array(
+          'ssl' => array(
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true,
+          )
+        );
+        $streamContext = stream_context_create($options);
+        $this->socket = stream_socket_client("$conntype://{$this->host}:{$this->port}", $errno, $errstr, $timeout, $conflag, $streamContext);
       } catch (\Exception $e) {
         throw new Exception($e->getMessage());
       }
