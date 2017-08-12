@@ -4,12 +4,14 @@ README
 About this fork
 ---------------
 
-I decide to implement this XMPPHP library to one of my own projects (GTalk bot),
-I appreciate too much the time and effort that some people did it to build this
-class and I think that if I refactor the library to clarify the code some users
-could be apreciated. This is why I forked this repository :)
+Correct add namespaces - use psr4 and not move all files
+Get library - from tecnocat - BirknerAlex add namespaces, but remove examples.
+Also merge allmost all usefull patches and merge ours all stupid patches with
+only rename composer, move files or fix formatting
 
-Any pull request are welcome!
+```
+composer require ivan1986/xmpphp
+```
 
 About XMPPHP
 ------------
@@ -28,7 +30,7 @@ XMPPHP is an elegant PHP library for XMPP (aka Jabber, Google Talk, etc).
 Requirements
 ------------
 
-* PHP 5.x
+* PHP 5.x or 7.x
 * SSL Support Compiled
 
 License Exception
