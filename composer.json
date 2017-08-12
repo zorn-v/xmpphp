@@ -2,7 +2,8 @@
     "name": "ivan1986/xmpphp",
     "description": "XMPP PHP Library",
     "type": "library",
-    "license": "gpl-2",
+    "keywords": ["jabber", "xmpphp", "gtalk"],
+    "license": "GPL-2.0+",
     "authors": [
         {
             "name": "Nathan Fritz",

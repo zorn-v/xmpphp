@@ -139,14 +139,14 @@ class XMLStream {
   protected $default_ns;
 
   /**
-   * @var string
+   * @var array
    */
-  protected $until = '';
+  protected $until = [];
 
   /**
-   * @var string
+   * @var array
    */
-  protected $until_count = '';
+  protected $until_count = [];
 
   /**
    * @var array
@@ -926,8 +926,6 @@ class XMLStream {
       }
     }
 
-    if ($this->until != null) {
-
       foreach($this->until as $key => $until) {
 
         if (is_array($until) AND in_array($name, $until)) {
@@ -942,7 +940,6 @@ class XMLStream {
           // $this->until[$key] = false;
         }
       }
-    }
   }
 
   /**
