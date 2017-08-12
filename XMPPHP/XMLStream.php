@@ -194,6 +194,12 @@ class XMLStream {
   protected $reconnectTimeout = 30;
 
   /**
+   * counter for number of messages sent
+   * @var integer
+   */
+  protected $sendCount = 0;
+
+  /**
    * Constructor
    *
    * @param string  $host
@@ -1037,6 +1043,8 @@ class XMLStream {
 
     $this->log->log('Successfully sent ' . $sentbytes . ' bytes', Log::LEVEL_VERBOSE);
 
+    $this->sendCount++;
+
     return $sentbytes;
   }
 
@@ -1083,5 +1091,9 @@ class XMLStream {
     $updated = stream_select($read, $write, $except, 0);
 
     return (($updated !== false) AND ($updated > 0));
+  }
+
+  public function getSendCount() {
+    return $this->sendCount;
   }
 }
