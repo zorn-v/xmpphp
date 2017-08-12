@@ -1,0 +1,36 @@
+{
+    "name": "ivan1986/xmpphp",
+    "description": "XMPP PHP Library",
+    "type": "library",
+    "license": "gpl-2",
+    "authors": [
+        {
+            "name": "Nathan Fritz",
+            "email": "fritzy@netflint.net"
+        },
+        {
+            "name": "Stephan Wentz",
+            "email": "stephan@wentz.it"
+        },
+        {
+            "name": "Christian Weiske",
+            "email": "cweiske@cweiske.de"
+        },
+        {
+            "name": "Vito Tafuni",
+            "email": "vitotafuni@gmail.com"
+        },
+        {
+            "name": "Ivan Borzenkov",
+            "email": "ivan.borzenkov@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "XMPPHP\\": "XMPPHP" }
+    },
+    "require": {
+        "php": ">=5.3|~7",
+        "ext-mbstring": "*",
+        "ext-xml": "*"
+    }
+}

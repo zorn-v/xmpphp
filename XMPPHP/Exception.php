@@ -27,6 +27,8 @@
  * @copyright 2008 Nathanael C. Fritz
  */
 
+namespace XMPPHP;
+
 /**
  * XMPPHP Exception
  *
@@ -37,5 +39,5 @@
  * @copyright 2008 Nathanael C. Fritz
  * @version   $Id$
  */
-class XMPPHP_Exception extends Exception {
+class Exception extends \Exception {
 }

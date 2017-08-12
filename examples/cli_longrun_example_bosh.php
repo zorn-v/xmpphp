@@ -19,7 +19,7 @@
  * LEVEL_VERBOSE = 4;
  */
 
-require 'XMPPHP/BOSH.php';
+require '../vendor/autoload.php';
 
 $conf = array(
   'server'   => 'server.tld',
@@ -29,13 +29,13 @@ $conf = array(
   'proto'    => 'xmpphp',
   'domain'   => 'server.tld',
   'printlog' => true,
-  'loglevel' => XMPPHP_Log::LEVEL_VERBOSE,
+  'loglevel' => XMPPHP\Log::LEVEL_VERBOSE,
 );
 
 // Easy and simple for access to variables with their names
 extract($conf);
 
-$conn = new XMPPHP_BOSH($server, $port, $username, $password, $proto, $domain, $printlog, $loglevel);
+$conn = new XMPPHP\BOSH($server, $port, $username, $password, $proto, $domain, $printlog, $loglevel);
 $conn->autoSubscribe();
 
 try {
@@ -103,6 +103,6 @@ try {
       }
     }
   }
-} catch(XMPPHP_Exception $e) {
+} catch(XMPPHP\Exception $e) {
   die($e->getMessage());
 }

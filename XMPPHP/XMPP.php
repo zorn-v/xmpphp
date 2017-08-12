@@ -27,11 +27,7 @@
  * @copyright 2008 Nathanael C. Fritz
  */
 
-/** XMPPHP_XMLStream */
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'XMLStream.php';
-
-/** XMPPHP_Roster */
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Roster.php';
+namespace XMPPHP;
 
 /**
  * XMPPHP XMPP
@@ -43,7 +39,7 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'Roster.php';
  * @copyright 2008 Nathanael C. Fritz
  * @version   $Id$
  */
-class XMPPHP_XMPP extends XMPPHP_XMLStream {
+class XMPP extends XMLStream {
 
   /**
    * @var string
@@ -145,7 +141,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $this->resource       = $resource;
     $this->server         = $server;
     $this->basejid        = $this->user . '@' . $this->server;
-    $this->roster         = new XMPPHP_Roster();
+    $this->roster         = new Roster();
     $this->track_presence = true;
     $this->stream_start   = '<stream:stream to="' . $server . '" xmlns:stream="http://etherx.jabber.org/streams" xmlns="jabber:client" version="1.0">';
     $this->stream_end     = '</stream:stream>';
@@ -304,7 +300,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
     $payload['type'] = (isset($xml->attrs['type'])) ? $xml->attrs['type'] : 'chat';
     $payload['from'] = $xml->attrs['from'];
     $payload['body'] = is_object($body) ? $body->data : false;
-    $this->log->log('Message: ' . $payload['body'], XMPPHP_Log::LEVEL_DEBUG);
+    $this->log->log('Message: ' . $payload['body'], Log::LEVEL_DEBUG);
     $this->event('message', $payload);
   }
 
@@ -332,7 +328,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
             $array = array('xmlns' => 'jabber:x:data', 'type' => 'submit');
             $this->addIdHandler($id, 'room_join_handler');
             $this->sendIq($payload['from'], 'set', 'http://jabber.org/protocol/muc#owner', $this->x($array), null, $id);
-            $this->log->log('Presence: sending default config for created room...',  XMPPHP_Log::LEVEL_DEBUG);
+            $this->log->log('Presence: sending default config for created room...',  Log::LEVEL_DEBUG);
             break;
 
           case '110':
@@ -360,7 +356,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
       $this->roster->setPresence($payload['from'], $payload['priority'], $payload['show'], $payload['status']);
     }
 
-    $this->log->log('Presence: ' . $payload['from'] . ' [' . $payload['show'] . '] ' . $payload['status'],  XMPPHP_Log::LEVEL_DEBUG);
+    $this->log->log('Presence: ' . $payload['from'] . ' [' . $payload['show'] . '] ' . $payload['status'],  Log::LEVEL_DEBUG);
 
     if (array_key_exists('type', $xml->attrs) AND $xml->attrs['type'] == 'subscribe') {
 
@@ -466,9 +462,9 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
    * @param string $xml
    */
   protected function sasl_failure_handler($xml) {
-    $this->log->log('Auth failed!',  XMPPHP_Log::LEVEL_ERROR);
+    $this->log->log('Auth failed!',  Log::LEVEL_ERROR);
     $this->disconnect();
-    throw new XMPPHP_Exception('Auth failed!');
+    throw new Exception('Auth failed!');
   }
 
   /**
@@ -526,7 +522,7 @@ class XMPPHP_XMPP extends XMPPHP_XMLStream {
         $this->send('<response xmlns="urn:ietf:params:xml:ns:xmpp-sasl" />');
       }
       else {
-        $this->log->log('ERROR receiving challenge : ' . $challenge, XMPPHP_Log::LEVEL_ERROR);
+        $this->log->log('ERROR receiving challenge : ' . $challenge, Log::LEVEL_ERROR);
       }
     }
   }

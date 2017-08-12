@@ -27,6 +27,8 @@
  * @copyright 2008 Nathanael C. Fritz
  */
 
+namespace XMPPHP;
+
 /**
  * XMPPHP XMLObject
  *
@@ -37,7 +39,7 @@
  * @copyright 2008 Nathanael C. Fritz
  * @version   $Id$
  */
-class XMPPHP_XMLObj {
+class XMLObj {
 
   /**
    * Tag name

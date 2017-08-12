@@ -27,6 +27,8 @@
  * @copyright 2008 Nathanael C. Fritz
  */
 
+namespace XMPPHP;
+
 /**
  * XMPPHP Roster
  *
@@ -37,7 +39,7 @@
  * @copyright 2008 Nathanael C. Fritz
  * @version   $Id$
  */
-class XMPPHP_Roster {
+class Roster {
 
   /**
    * Roster array, handles contacts and presence.  Indexed by jid.

@@ -27,6 +27,8 @@
  * @copyright 2008 Nathanael C. Fritz
  */
 
+namespace XMPPHP;
+
 /**
  * XMPPHP Log
  *
@@ -37,7 +39,7 @@
  * @copyright 2008 Nathanael C. Fritz
  * @version   $Id$
  */
-class XMPPHP_Log {
+class Log {
 
   const LEVEL_ERROR   = 0;
   const LEVEL_WARNING = 1;

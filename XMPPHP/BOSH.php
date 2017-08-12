@@ -27,8 +27,7 @@
  * @copyright 2008 Nathanael C. Fritz
  */
 
-/** XMPPHP_XMLStream */
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'XMLStream.php';
+namespace XMPPHP;
 
 /**
  * XMPPHP BOSH
@@ -40,7 +39,7 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'XMLStream.php';
  * @copyright 2008 Nathanael C. Fritz
  * @version   $Id$
  */
-class XMPPHP_BOSH extends XMPPHP_XMPP {
+class BOSH extends XMPP {
 
   /**
    * @var integer
@@ -115,7 +114,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
       $buff = '<stream:stream xmlns="jabber:client" xmlns:stream="http://etherx.jabber.org/streams">';
       xml_parse($this->parser, $buff, false);
       $response = $this->__sendBody($body);
-      $rxml = new SimpleXMLElement($response);
+      $rxml = new \SimpleXMLElement($response);
       $this->sid = $rxml['sid'];
       $this->inactivity = $rxml['inactivity'];
     }
@@ -153,7 +152,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
       $output = curl_exec($ch);
       if (curl_getinfo($ch, CURLINFO_HTTP_CODE) != '200') {
-        throw new XMPPHP_Exception('Wrong response from server!');
+        throw new Exception('Wrong response from server!');
       }
 
       $this->http_buffer[] = $output;
@@ -171,7 +170,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
   public function __buildBody($sub = null) {
 
     $xml = '<body xmlns="http://jabber.org/protocol/httpbind" xmlns:xmpp="urn:xmpp:xbosh" />';
-    $xml = new SimpleXMLElement($xml);
+    $xml = new \SimpleXMLElement($xml);
     $xml->addAttribute('content', 'text/xml; charset=utf-8');
     $xml->addAttribute('rid', $this->rid);
     $this->rid++;
@@ -227,12 +226,12 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
 
       if ($buffer) {
 
-        $xml      = new SimpleXMLElement($buffer);
+        $xml      = new \SimpleXMLElement($buffer);
         $children = $xml->xpath('child::node()');
 
         foreach ($children as $child) {
           $buff = $child->asXML();
-          $this->log->log('RECV: ' . $buff,  XMPPHP_Log::LEVEL_VERBOSE);
+          $this->log->log('RECV: ' . $buff,  Log::LEVEL_VERBOSE);
           xml_parse($this->parser, $buff, false);
         }
       }
@@ -248,8 +247,8 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
    * null param are not used and just to statify Strict Function Declaration
    */
   public function send($msg, $null = null) {
-    $this->log->log('SEND: ' . $msg,  XMPPHP_Log::LEVEL_VERBOSE);
-    $msg = new SimpleXMLElement($msg);
+    $this->log->log('SEND: ' . $msg,  Log::LEVEL_VERBOSE);
+    $msg = new \SimpleXMLElement($msg);
     $this->__sendBody($this->__buildBody($msg), true);
   }
 
@@ -293,7 +292,7 @@ class XMPPHP_BOSH extends XMPPHP_XMPP {
       flock($session_file_fp, LOCK_UN);
       fclose($session_file_fp);
 
-      $this->log->log('SESSION: reading ' . $session_serialized . ' from ' . $session_file,  XMPPHP_Log::LEVEL_VERBOSE);
+      $this->log->log('SESSION: reading ' . $session_serialized . ' from ' . $session_file,  Log::LEVEL_VERBOSE);
       if ($session_serialized != '') {
         $_SESSION['XMPPHP_BOSH'] = unserialize($session_serialized);
       }

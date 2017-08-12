@@ -19,7 +19,7 @@
  * LEVEL_VERBOSE = 4;
  */
 
-require 'XMPPHP/XMPP.php';
+require '../vendor/autoload.php';
 
 $conf = array(
   'server'   => 'talk.google.com',
@@ -29,13 +29,13 @@ $conf = array(
   'proto'    => 'xmpphp',
   'domain'   => 'gmail.com',
   'printlog' => true,
-  'loglevel' => XMPPHP_Log::LEVEL_VERBOSE,
+  'loglevel' => XMPPHP\Log::LEVEL_VERBOSE,
 );
 
 // Easy and simple for access to variables with their names
 extract($conf);
 
-$conn = new XMPPHP_XMPP($server, $port, $username, $password, $proto, $domain, $printlog, $loglevel);
+$conn = new XMPPHP\XMPP($server, $port, $username, $password, $proto, $domain, $printlog, $loglevel);
 $conn->autoSubscribe();
 
 $vcard_request = array();
@@ -143,6 +143,6 @@ try {
       }
     }
   }
-} catch(XMPPHP_Exception $e) {
+} catch(XMPPHP\Exception $e) {
   die($e->getMessage());
 }
