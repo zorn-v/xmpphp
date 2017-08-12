@@ -843,7 +843,11 @@ class XMLStream {
       foreach ($this->idhandlers as $id => $handler) {
 
         $condition1 = (array_key_exists('id', $this->xmlobj[2]->attrs));
-        $condition2 = ($this->xmlobj[2]->attrs['id'] == $id);
+		if (isset($this->xmlobj[2]->attrs['id'])) {
+		  $condition2 = ($this->xmlobj[2]->attrs['id'] == $id);
+		} else {
+ 		  $condition2 = false;
+		}
 
         if ($condition1 AND $condition2) {
 

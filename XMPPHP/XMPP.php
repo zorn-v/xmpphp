@@ -537,7 +537,8 @@ class XMPP extends XMLStream {
     if ($xml->attrs['type'] == 'result') {
       $this->log->log('Bound to ' . $xml->sub('bind')->sub('jid')->data);
       $this->fulljid = $xml->sub('bind')->sub('jid')->data;
-      $this->jid     = array_shift(explode('/', $this->fulljid));
+	  $exploded = explode('/', $this->fulljid);
+      $this->jid = array_shift($exploded);
     }
 
     $id      = $this->getId();
