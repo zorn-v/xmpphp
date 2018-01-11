@@ -517,7 +517,8 @@ class XMLStream {
         }
 
         $updated = stream_select($read, $write, $except, $secs, $usecs);
-
+        $buff = '';
+        
         if ($updated === false) {
 
           $this->log->log('Error on stream_select()',  Log::LEVEL_VERBOSE);
@@ -538,8 +539,6 @@ class XMLStream {
           }
         }
         elseif ($updated > 0) {
-
-          $buff = '';
 
           do {
 
