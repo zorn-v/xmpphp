@@ -10,7 +10,7 @@ Also merge allmost all usefull patches and merge ours all stupid patches with
 only rename composer, move files or fix formatting
 
 ```
-composer require ivan1986/xmpphp
+composer require zorn-v/xmpphp
 ```
 
 About XMPPHP

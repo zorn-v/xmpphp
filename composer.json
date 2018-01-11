@@ -1,5 +1,5 @@
 {
-    "name": "ivan1986/xmpphp",
+    "name": "zorn-v/xmpphp",
     "description": "XMPP PHP Library",
     "type": "library",
     "keywords": ["jabber", "xmpphp", "gtalk"],
@@ -30,7 +30,7 @@
         "psr-4": { "XMPPHP\\": "XMPPHP" }
     },
     "require": {
-        "php": ">=5.3|~7",
+        "php": ">=5.4|~7",
         "ext-mbstring": "*",
         "ext-xml": "*"
     }
