@@ -587,7 +587,7 @@ class XMPP extends XMLStream {
           $name = '';
         }
 
-        $subscription = $item->attrs['subscription'];
+        $subscription = isset($item->attrs['subscription']) ? $item->attrs['subscription'] : null;
 
         foreach ($item->subs as $subitem) {
           if ($subitem->name == 'group') {
